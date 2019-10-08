@@ -1,0 +1,128 @@
+{template '_header'}
+
+<div class="page-heading">
+     <span class='pull-right'>
+    </span>
+    <h2>招商员列表
+        <small>总数: <span class='text-danger'>{$total}</span></small>
+    </h2>
+</div>
+<form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
+    <input type="hidden" name="c" value="site"/>
+    <input type="hidden" name="a" value="entry"/>
+    <input type="hidden" name="m" value="ewei_shopv2"/>
+    <input type="hidden" name="do" value="web"/>
+    <input type="hidden" name="r" value="jflc.merch.agent"/>
+
+    <div class="page-toolbar row m-b-sm m-t-sm">
+        <div class="col-sm-4">
+            <div class="input-group-btn">
+                <button class="btn btn-default btn-sm" type="button" data-toggle='refresh'><i class='fa fa-refresh'></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="col-sm-6 pull-right">
+            <div class="input-group">
+                <input type="text" class="form-control input-sm" name="keyword" value="{$_GPC['keyword']}"
+                       placeholder="输入关键字"/>
+                <span class="input-group-btn">
+                    <button class="btn btn-sm btn-primary" type="submit"> 搜索</button>
+				</span>
+            </div>
+        </div>
+    </div>
+</form>
+{if count($list)>0}
+
+<table class="table table-hover table-responsive">
+    <thead class="navbar-inner">
+    <tr>
+        <th style="width:25px;"><input type='checkbox'/></th>
+        <th style='width:200px;'>粉丝</th>
+        <th style='width:110px;'>姓名<br/>手机号码</th>
+
+        <th style="width:100px;">积分/余额</th>
+        <th style="width:100px;">供应商</th>
+        <th style="width:100px;">已结算分红</th>
+        <th style="width:100px;">全部分红</th>
+        <th style='width:70px;'>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {loop $list $row}
+    <tr>
+        <td>
+            <input type='checkbox' value="{$row['id']}"/>
+        </td>
+
+        <td>
+                    <span data-toggle='tooltip' title='{$row['nickname']}'>
+                    {if !empty($row['avatar'])}
+                        <img src='{php echo tomedia($row['avatar'])}'
+                             style='width:30px;height:30px;padding1px;border:1px solid #ccc'/>
+                    {/if}
+                        {if empty($row['nickname'])}未更新{else}{$row['nickname']}{/if}
+                    </span>
+        </td>
+
+        <td>{$row['realname']} <br/> {$row['mobile']}</td>
+
+        <td><label class="label label-primary">积分: {php echo intval($row['credit1'])}</label>
+            <br/><label class="label label-danger">余额: {$row['credit2']}</label></td>
+
+        <td><a href="{php echo webUrl('jflc.merch',array('id'=>$row['id']))}"><label class="label label-default">{$row['num']}</label></a></td>
+        <td>{$row['total_credit']}</td>
+        <td>{$row['all_credit']}</td>
+        <td style="overflow:visible;">
+            <div class="btn-group btn-group-sm">
+                <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
+                   href="javascript:;">操作 <span class="caret"></span></a>
+                <ul class="dropdown-menu dropdown-menu-left">
+
+                    <li><a href="{php echo webUrl('order/list',array('agentid' => $row['mid']));}" title='推广订单'
+                           target='_blank'><i class='fa fa-list'></i> 推广订单</a></li>
+
+                </ul>
+            </div>
+        </td>
+    </tr>
+    {/loop}
+    </tbody>
+</table>
+{$pager}
+
+{else}
+<div class='panel panel-default'>
+    <div class='panel-body' style='text-align: center;padding:30px;'>
+        暂时没有任何分销商!
+    </div>
+</div>
+{/if}
+<script language="javascript">
+    require(['bootstrap'], function () {
+        $("[rel=pop]").popover({
+            trigger: 'manual',
+            placement: 'left',
+            title: $(this).data('title'),
+            html: 'true',
+            content: $(this).data('content'),
+            animation: false
+        }).on("mouseenter", function () {
+            var _this = this;
+            $(this).popover("show");
+            $(this).siblings(".popover").on("mouseleave", function () {
+                $(_this).popover('hide');
+            });
+        }).on("mouseleave", function () {
+            var _this = this;
+            setTimeout(function () {
+                if (!$(".popover:hover").length) {
+                    $(_this).popover("hide")
+                }
+            }, 100);
+        });
+    });
+</script>
+
+{template '_footer'}

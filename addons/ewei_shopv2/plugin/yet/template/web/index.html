@@ -1,0 +1,56 @@
+{template '_header'}
+
+<div class="page-heading">
+	<span class='pull-right'>
+
+      <a class='btn btn-primary btn-sm' id="build_html" href="#"><i class="fa fa-reset"></i> 同步订单</a>
+
+	</span>
+  <h2>AX订单同步</h2>
+</div>
+<table class="table table-responsive table-hover">
+  <thead>
+  <tr>
+    <th style='width:80px;'>ID</th>
+    <th style='width:200px;'>订单编号</th>
+    <th style='width:160px;'>订单日期</th>
+    <th style='width:100px;'>订单状态</th>
+    <th>状态</th>
+  </tr>
+  </thead>
+  <tbody>
+  {loop $list $row}
+    <tr>
+      <td>{$row['id']}</td>
+      <td>{$row['ordersn']}</td>
+      <td>
+        {php echo date('Y-m-d H:i:s',$row['createtime'])}
+      </td>
+      <td>
+        {$row['status']}
+      </td>
+      <td class="sync" id="{$row['ordersn']}">未同步</td>
+    </tr>
+  {/loop}
+  </tbody>
+</table>
+
+<script>
+  var site_array= new Array({$sn_str});
+  jQuery(document).ready(function ($) {
+    var get_html = function (array) {
+      if (!array.length) return;
+      var val = array.shift();
+      var o_id = '#' + val;
+      $(o_id).text('load....');
+      $.get("{php echo webUrl('oms/sync_order') }", {sn:val}, function (response) {
+        $(o_id).text('suscess');
+        get_html(array);
+      });
+    }
+    $('#build_html').click(function () {
+      get_html(site_array);
+    })
+  });
+</script>
+{template '_footer'}

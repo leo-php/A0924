@@ -1,0 +1,76 @@
+{template '_header'}
+{template 'abonus/common'}
+<script>document.title = "{php echo $this->set['texts']['become']}"; </script>
+<div class='fui-page fui-page-current page-abonus-register'>
+    {if is_h5app()}
+    <div class="fui-header">
+        <div class="fui-header-left">
+            <a class="back"></a>
+        </div>
+        <div class="title">成为区域代理商</div>
+        <div class="fui-header-right"></div>
+    </div>
+    {/if}
+    <div class='fui-content'>
+        <img style='width:100%;position: relative' src="{if empty($set['regbg'])}../addons/ewei_shopv2/plugin/abonus/template/mobile/default/static/images/bg.png{else}{php echo tomedia($set['regbg'])}{/if}" />
+
+
+        <div class="fui-cell-group" style='margin-top:0'>
+            <div class="fui-cell-title">
+                请选择申请区域
+            </div>
+            <input type="hidden" name="area_type" value="{$memberLevel['area_type']}">
+            <div class='fui-cell'>
+                <div class='fui-cell-label'>代理类型</div>
+                <div class='fui-cell-info'>
+                    {if $memberLevel['area_type'] == 1}
+                    <label class="radio-inline">
+                        区级
+                    </label>
+                    {else if $memberLevel['area_type'] == 2}
+                    <label class="radio-inline">
+                        市级
+                    </label>
+                    {else if $memberLevel['area_type'] == 3}
+                    <label class="radio-inline">
+                        省级
+                    </label>
+                    {/if}
+                </div>
+            </div>
+
+            <div class='fui-cell' id="div_province" style="display:none;">
+                <div class='fui-cell-label'>代理省份</div>
+                <div class='fui-cell-info'>
+                    <input type="text" class='fui-input' id="citypicker1" placeholder="请选择代理省份"  readonly/>
+                </div>
+            </div>
+
+            <div class='fui-cell' id="div_city"  style="display:none;">
+                <div class='fui-cell-label'>代理城市</div>
+                <div class='fui-cell-info'>
+                    <input type="text" class='fui-input' id="citypicker2" placeholder="请选择代理城市"  readonly/>
+                </div>
+            </div>
+
+            <div class='fui-cell' id="div_area"  style="display:none;">
+                <div class='fui-cell-label'>代理地区</div>
+                <div class='fui-cell-info'>
+                    <input type="text" class='fui-input' id="citypicker3" placeholder="请选择代理地区"  readonly/>
+                </div>
+            </div>
+
+
+
+        </div>
+        <div class='btn btn-warning block btn-submit'>申请成为{php echo $this->set['texts']['agent']}</div>
+
+
+    </div>
+    <script language="javascript">
+        require(['../addons/ewei_shopv2/static/js/app/biz/member/area_register.js'], function (modal) {
+            modal.init();
+        })
+    </script>
+</div>
+{template '_footer'}

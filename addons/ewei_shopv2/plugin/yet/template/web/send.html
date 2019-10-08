@@ -1,0 +1,136 @@
+{template '_header'}
+<div class="page-heading">
+    <h2>批量充值</h2>
+</div>
+
+<form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
+
+    <div class="alert alert-info">
+        <p>根据选择的用户群体不同，发送时间会不相同，发送期间请耐心等待! </p>
+    </div>
+
+    <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label must">充值类型</label>
+        <div class="col-sm-9 col-xs-12">
+            <label class="radio-inline"><input type="radio" name="send1" value="1" checked/>分销商</label>
+            <label class="radio-inline"><input type="radio" name="send1" value="2"/>全民股东</label>
+            <label class="radio-inline"><input type="radio" name="send1" value="3"/>区域代理</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label must">充值批号</label>
+        <div class="col-sm-9 col-xs-12">
+            <input type="text" name="send_sn" class="form-control" id="send_sn"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label must">充值金额</label>
+        <div class="col-sm-9 col-xs-12">
+            <input type="number" name="send_money" class="form-control" id="send_money"/>
+        </div>
+    </div>
+
+    <div class="form-group choose choose_1">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">分销商等级</label>
+        <div class="col-sm-8 col-lg-9 col-xs-12">
+            <select name="send_commission" class="form-control" id="value_1">
+                {loop $list1 $l}
+                    <option value="{$l['id']}">{$l['levelname']}</option>
+                {/loop}
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group choose choose_2" style='display: none'>
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">全民股东等级</label>
+        <div class="col-sm-8 col-lg-9 col-xs-12">
+            <select name="send_globonus" class="form-control" id="value_1">
+                {loop $list2 $l}
+                    <option value="{$l['id']}">{$l['levelname']}</option>
+                {/loop}
+            </select>
+        </div>
+    </div>
+    <div class="form-group choose choose_3" style='display:none '>
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">区域代理等级</label>
+        <div class="col-sm-8 col-lg-9 col-xs-12">
+            <select name="send_abonus" class="form-control" id="value_1">
+                {loop $list3 $l}
+                    <option value="{$l['id']}">{$l['levelname']}</option>
+                {/loop}
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+        <div class="col-sm-9 col-xs-12">
+            <div class="help-block">
+                <input id='btn' type="button" name="button" value="立即发送" class="btn btn-primary" onclick="send()"/>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        $(function () {
+            $(':radio[name=send1]').click(function () {
+                var v = $(this).val();
+                $(".choose").hide();
+                $(".choose_" + v).show();
+            })
+        })
+
+
+        function send() {
+            var send1 = $(':radio[name=send1]:checked').val();
+            var send_sn = $('input[name=send_sn]').val();
+            var send_money = $('input[name=send_money]').val();
+
+            var send_commission = $('select[name=send_commission]').val();
+            var send_globonus = $('select[name=send_globonus]').val();
+            var send_abonus = $('select[name=send_abonus]').val();
+
+
+            if ($.trim(send_sn) == '') {
+                tip.msgbox.err('请填写充值批号!');
+                return;
+            }
+            if (!/^\d+(\.\d+)?$/.test(send_money)) {
+                tip.msgbox.err('请输入正确的金额!');
+                return;
+            }
+            if (parseFloat(send_money) <= 0) {
+                tip.msgbox.err('金额请输入大于0!');
+                return;
+            }
+            tip.confirm('确定需要为批量用户充值!', function () {
+                        $.ajax({
+                            url: "{php echo webUrl('yet/send_json')}",
+                            type: 'post',
+                            dataType: 'json',
+                            data: {send1:send1,send_sn:send_sn,send_money:send_money,send_commission:send_commission,send_globonus:send_globonus,send_abonus:send_abonus},
+                            success: function (data) {
+                                if (data.status == 1) {
+                                    tip.alert('成功为' + data.result.lenght + " 个用户充值!");
+                                } else {
+                                    tip.msgbox.err(data.result.message);
+                                }
+                            },
+                            error: function (e) {
+                                alert(e);
+                            }
+                        });
+                    },
+                    function (){return;}
+            );
+
+        }
+
+
+    </script>
+</form>
+
+
+{template '_footer'}

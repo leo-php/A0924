@@ -1,0 +1,94 @@
+<div class="form-group">
+    <label class="col-sm-2 control-label">开启消费全返</label>
+    <div class="col-sm-8">
+        <label class="radio-inline"><input type="radio"  name="data[status]" value="0" {if $data['status'] ==0} checked="checked"{/if} /> 关闭</label>
+        <label class="radio-inline"><input type="radio"  name="data[status]" value="1" {if $data['status'] ==1} checked="checked"{/if} /> 开启</label>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">消费每日上限</label>
+    <div class="col-sm-8">
+        <input type='text' class='form-control' name='data[max_price]' value="{$data['max_price']}"/>
+        <span class="help-block">为空或0，消费不受限制</span>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">线下每日上限</label>
+    <div class="col-sm-8">
+        <input type='text' class='form-control' name='data[max_point]' value="{$data['max_point']}"/>
+        <span class="help-block">为空或0，消费不受限制</span>
+    </div>
+</div>
+
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">全返比例</label>
+    <div class="col-sm-8">
+        <div class="input-group">
+            <input type='text' class='form-control' name='data[percentage]' value="{$data['percentage']}"/><div class="input-group-addon">%</div>
+        </div>
+        <span class="help-block">每天返点的百分比</span>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">商家购置比例</label>
+    <div class="col-sm-8">
+        <div class="input-group">
+            <input type='text' class='form-control' name='data[purchase]' value="{$data['purchase']}"/><div class="input-group-addon">%</div>
+        </div>
+        <span class="help-block">商家购置积分比率</span>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">两级分佣</label>
+    <div class="col-sm-8">
+        <div class="input-group">
+            <div class="input-group-addon">一级</div><input type='text' class='form-control' name='data[level1]' value="{$data['level1']}"/><div class="input-group-addon">%</div>
+            <div class="input-group-addon">  </div>
+            <div class="input-group-addon">二级</div><input type='text' class='form-control' name='data[level2]' value="{$data['level2']}"/><div class="input-group-addon">%</div>
+        </div>
+        <span class="help-block">两级分佣全返积分比例</span>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">商家推荐分红</label>
+    <div class="col-sm-8">
+        <div class="input-group">
+            <input type='text' class='form-control' name='data[rebusine]' value="{$data['rebusine']}"/><div class="input-group-addon">%</div>
+        </div>
+        <span class="help-block">获取该商家百分比营业额积分全返</span>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">区域分红</label>
+    <div class="col-sm-8">
+        <div class="input-group">
+            <div class="input-group-addon">县级</div><input type='text' class='form-control' name='data[area]' value="{$data['area']}"/><div class="input-group-addon">%</div>
+            <div class="input-group-addon">  </div>
+            <div class="input-group-addon">市级</div><input type='text' class='form-control' name='data[city]' value="{$data['city']}"/><div class="input-group-addon">%</div>
+        </div>
+        <span class="help-block">当用户在所在区域产生消费，区域代理获取分红全返</span>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">升级身份全返</label>
+    <div class="col-sm-8">
+        <input type='text' class='form-control' name='data[up_point]' value="{$data['up_point']}"/>
+        <span class="help-block">当普通粉丝进行升级会员和商家时，依旧按照最近的非普通粉丝用户积分进行全返</span>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">会员升级费用</label>
+    <div class="col-sm-8">
+        <input type='text' class='form-control' name='data[commsion_apply]' value="{$data['commsion_apply']}"/>
+        <span class="help-block">当普通粉丝进行升级会员和商家时，需要缴纳的费用,如果费用为0，则以分销资格设置成为分销商条件为准</span>
+    </div>
+</div>

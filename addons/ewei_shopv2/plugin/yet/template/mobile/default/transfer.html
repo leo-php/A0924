@@ -1,0 +1,93 @@
+{template '_header'}
+<div class='fui-page  fui-page-current member-cart-page'>
+    <div class="fui-header">
+        <div class="fui-header-left">
+            <a class="back"></a>
+        </div>
+        <div class="title">转赠积分</div>
+        <div class="fui-header-right">&nbsp;</div>
+    </div>
+
+    <div class='fui-content' style='margin-top:5px;'>
+        <div class="fui-cell-group">
+            <div class="fui-cell">
+                <div class="fui-cell-text"><p>当前积分：{php echo intval($member['credit1'])}</p></div>
+            </div>
+            {loop $push_0 $key=>$value}
+                <div class="fui-cell ">
+                    <div class="fui-cell-label " style="width: 6rem;">{$key}</div>
+                    <div class="fui-cell-info"><span style="float: right;">{php echo empty($value)?0:$value }</span>
+                    </div>
+                </div>
+            {/loop}
+        </div>
+        <div class="fui-cell-group">
+
+            <form action="" method="post" id="sub">
+                <input type="hidden" name="token" value="{$_W['token']}"/>
+
+                <div class="fui-cell weui_cells_form">
+                    <div class="fui-cell-text ">会员ID</div>
+                    <div class="fui-cell-info">
+                        <input type="tel" class='fui-input' id='post_id' name='post_id'
+                               placeholder="请输入会员ID"
+                               value=""/>
+                    </div>
+                </div>
+
+
+                <div class="fui-cell weui_cells_form">
+                    <div class="fui-cell-text ">转赠积分</div>
+                    <div class="fui-cell-info">
+                        <input type="tel" class='fui-input' id='post_num' name='post_num'
+                               placeholder="请输入积分"
+                               value=""/>
+                    </div>
+                </div>
+
+
+            </form>
+        </div>
+
+        <button type="submit" class='btn btn-success block btn-pay' style="float:right" id="showTooltips">确认提交</button>
+    </div>
+
+
+</div>
+
+<script>
+    $("#showTooltips").click(function () {
+
+        var post_num = $('#post_num').val();
+        var post_id = $('#post_id').val();
+
+        var url = '{php echo mobileUrl('yet/post') }';
+        var info_url = '{php echo mobileUrl('yet/info') }';
+        var args = {post_id:post_id,post_num:post_num};
+
+        if (!post_id || !/\d+/.test(post_id))  FoxUI.toast.show('请输入会员ID');
+        else if (!post_num || !/\d+/.test(post_num))  FoxUI.toast.show('请输入转让积分');
+        else {
+            $.getJSON(info_url, args, function (data) {
+                var status = data.status;
+                if (status == 1) {
+                    var nickname = data.result.nickname;
+                    FoxUI.confirm('会员: '+nickname+'['+post_id+']<br/>积分:'+post_num, '确定转赠积分', function (){
+                        $.getJSON(url, args, function (data) {
+                            var status = data.status;
+                            if (status == 1) {
+                                FoxUI.toast.show('积分转赠成功');
+                                location.href = core.getUrl('member')
+                            } else {
+                                FoxUI.toast.show(data.result.message);
+                            }
+                        });
+                    });
+                } else {
+                    FoxUI.toast.show(data.result.message);
+                }
+            });
+        }
+    });
+</script>
+{template '_footer'}

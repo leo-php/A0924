@@ -1,0 +1,22 @@
+<div class='menu-header'>{php echo $this->plugintitle}</div>
+<ul>
+    <li {if $_W['routes']=='jflc.agent'}class="active"{/if}><a href="{php echo webUrl('jflc.agent')}">会员信息</a></li>
+</ul>
+
+<div class='menu-header'>招商员管理</div>
+<ul>
+    <li {if $_W['routes']=='jflc.merch.agent'}class="active"{/if}><a href="{php echo webUrl('jflc.merch.agent')}">招商员列表</a></li>
+    <li {if $_W['routes']=='jflc.merch.log'}class="active"{/if}><a href="{php echo webUrl('jflc.merch.log')}">分红日志</a></li>
+</ul>
+
+<div class='menu-header'>数据统计</div>
+<ul>
+    <li {if $_W['routes']=='jflc.log1'}class="active"{/if}><a href="{php echo webUrl('jflc.log1')}">理财日志</a></li>
+    <li {if $_W['routes']=='creditmanagement.log'}class="active"{/if}><a href="{php echo webUrl('creditmanagement.log')}">收益日志</a></li>
+</ul>
+
+<div class='menu-header'>设置</div>
+<ul>
+    <li {if $_W['routes']=='jflc.set'}class="active"{/if}><a href="{php echo webUrl('jflc.set')}">基础设置</a></li>
+    <!-- li {if $_W['routes']=='jflc.test'}class="active"{/if}><a href="{php echo webUrl('jflc.test')}">刷新数据</a></li -->
+</ul>

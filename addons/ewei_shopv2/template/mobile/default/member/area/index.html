@@ -1,0 +1,113 @@
+{template '_header'}
+<link href="../addons/ewei_shopv2/plugin/abonus/template/mobile/default/static/css/style.css" rel="stylesheet">
+<style>
+     .fui-list-group-title.lineblock2:before{
+        content: "";
+        position: absolute;
+        left: .5rem;
+        bottom: 0;
+        right: .5rem;
+        height: 1px;
+        border-top: 1px solid #ebebeb;
+        -webkit-transform-origin: 0 100%;
+        -ms-transform-origin: 0 100%;
+        transform-origin: 0 100%;
+        -webkit-transform: scaleY(0.5);
+        -ms-transform: scaleY(0.5);
+        transform: scaleY(0.5);
+    }
+
+</style>
+<div class='fui-page order-list-page '>
+    <div class="fui-header">
+        <div class="fui-header-left">
+            <a class="back"></a>
+        </div>
+        <div class="title">我的区域提成订单</div>
+    </div>
+    <div class='fui-content navbar order-list' style="top:3rem;">
+        <div class='fui-content-inner'>
+            {if !empty($canRegister)}
+            <div style="width:100%">
+                <a href="{php echo mobileUrl('member/area/register')}" class='btn btn-sm btn-danger external' style="border-radius: 5px;height: 1.9rem;line-height:1.9rem;width:  7rem;font-size: .75rem;display:block;margin:0 auto 1rem auto;">申请管辖区域</a>
+            </div>
+            {/if}
+            <div class="fui-cell-group" style="margin-top:0;">
+                <div class="fui-cell">
+                    <div class="fui-cell-icon headimg">
+                        <img src="{$member['avatar']}" class="round">
+                    </div>
+                    <div class="fui-cell-text">
+                        <p>{$member['nickname']}</p>
+                    </div>
+                    <div class="fui-cell-remark noremark">
+                        <span class="text text-danger">【{$memberLevel['levelname']}】</span>
+                        {if !empty($set['levelurl'])}
+                        <a href="{$set['levelurl']}"><span class="icon icon-help text-danger"></span></a>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+
+            <div class="block-1 bgg" style="height:7.7rem;">
+                <p class="title">累计提成</p>
+                <p class="price">{$totalPrice}</p>
+                <p class="price1" style="font-size:0.8rem;">
+                    代理区域：
+                    {if !empty($member['agent_province'])}
+                        {$member['agent_province']}
+                    {else if !empty($member['agent_city'])}
+                        {$member['agent_city']}
+                    {else if !empty($member['agent_area'])}
+                        {$member['agent_area']}
+                    {/if}
+                </p>
+                <p class="price2" style="font-size:0.6rem;margin-top:2%;">
+                   享受本区域内所有流通货物的总提成<span style="color:#ff2727;font-size:0.9rem;font-weight: 600;"> {$memberLevel['area_buy_point']}%</span>
+                </p>
+            </div>
+            <div class='content-empty' style='display:none;'>
+                <img src="{EWEI_SHOPV2_STATIC}images/nolist.png" style="width: 6rem;margin-bottom: .5rem;"><br/><p style="color: #999;font-size: .75rem">您暂时没有任何订单哦！</p><br/>
+                <a href="{php echo mobileUrl()}" class='btn btn-sm btn-danger-o external' style="border-radius: 100px;height: 1.9rem;line-height:1.9rem;width:  7rem;font-size: .75rem">去首页逛逛吧   </a>
+            </div>
+            <div class='container'></div>
+            <div class='infinite-loading'><span class='fui-preloader'></span><span class='text'> 正在加载...</span></div>
+        </div>
+    </div>
+
+    <script id='tpl_order_index_list' type='text/html'>
+
+        <%each list as order%>
+        <div class='fui-list-group order-item' data-orderid="<%order.id%>" data-verifycode="<%order.verifycode%>">
+
+                <div class='fui-list-group-title lineblock2 ' style="height:2.5rem;line-height: 1.2rem;">
+                    <p>
+                        购买用户: <%order.username%>
+                    <span style="float:right;"><%order.agent_type%></span>
+                    </p>
+                    <p><%order.createtime%></p>
+                </div>
+
+                <div class='fui-list-group-title'>
+                    <span class='status noremark'>
+                        实付:<span class='text-danger'>&yen; <span class="bigprice"><%order.price%></span></span> &nbsp;&nbsp;
+                        共获得提成:<span class='text-danger'>&yen; <span class="bigprice"><%order.agent_price%></span></span>
+                    </span>
+                </div>
+            </a>
+            <div class='fui-list-group-title lineblock   opblock' >
+        <span class='status noremark'>
+
+        </span>
+            </div>
+        </div>
+        <%/each%>
+    </script>
+    <script language='javascript'>require(['biz/order/area_list'], function (modal) {
+        modal.init({fromDetail:false,status:"{$_GPC['status']}",merchid:{php echo intval($_GPC['merchid'])}});
+    });</script>
+
+    {php $this->footerMenus()}
+</div>
+
+{template '_footer'}

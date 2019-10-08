@@ -1,0 +1,48 @@
+{template '_header'}
+<div class='fui-page  fui-page-current'>
+    <div class="fui-header">
+        <div class="fui-header-left">
+            <a class="back" onclick='location.back()'></a>
+        </div>
+        <div class="title">招商中心</div>
+        <div class="fui-header-right">&nbsp;</div>
+    </div>
+
+    <div class='fui-content' style='margin-top:5px;'>
+
+        <div class="fui-cell-group fui-cell-click">
+            <a class="fui-cell" href="{php echo mobileUrl('jflc.merch.merch_list')}">
+                <div class="fui-cell-icon"><i class="icon icon-profile"></i></div>
+                <div class="fui-cell-text"><p>招商总数</p></div>
+                <div class="fui-cell-remark">{$merch_num}</div>
+            </a>
+        </div>
+
+        <div class="fui-cell-group fui-cell-click">
+            <a class="fui-cell" href="{php echo mobileUrl('jflc.merch.log')}">
+                <div class="fui-cell-icon"><i class="icon icon-profile"></i></div>
+                <div class="fui-cell-text"><p>总招商分红</p></div>
+                <div class="fui-cell-remark">{$all_commission}</div>
+            </a>
+        </div>
+
+        <div class="fui-cell-group fui-cell-click">
+            <a class="fui-cell" href="{php echo mobileUrl('jflc.merch.log',array('status'=>1))}">
+                <div class="fui-cell-icon"><i class="icon icon-profile"></i></div>
+                <div class="fui-cell-text"><p>已结算分红</p></div>
+                <div class="fui-cell-remark">{$apply_commission}</div>
+            </a>
+        </div>
+
+        <div class="fui-cell-group fui-cell-click">
+            <a class="fui-cell" href="{php echo mobileUrl('jflc.merch.log',array('status'=>-1))}">
+                <div class="fui-cell-icon"><i class="icon icon-profile"></i></div>
+                <div class="fui-cell-text"><p>未结算分红</p></div>
+                <div class="fui-cell-remark">{$no_commission}</div>
+            </a>
+        </div>
+
+    </div>
+</div>
+{template '_footer'}
+

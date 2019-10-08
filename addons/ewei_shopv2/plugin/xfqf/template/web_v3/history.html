@@ -1,0 +1,68 @@
+{template '_header'}
+<div class="page-heading"><h2>积分全返列表</h2></div>
+<form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
+    <input type="hidden" name="c" value="site"/>
+    <input type="hidden" name="a" value="entry"/>
+    <input type="hidden" name="m" value="zm_shop"/>
+    <input type="hidden" name="do" value="web"/>
+    <input type="hidden" name="r" value="xfqf.log"/>
+
+    <div class="page-toolbar row m-b-sm m-t-sm">
+        <div class="col-sm-5">
+            <div class="btn-group btn-group-sm" style='float:left'>
+                <button class="btn btn-default btn-sm" type="button" data-toggle='refresh'><i class='fa fa-refresh'></i>
+                </button>
+            </div>
+            <div class='input-group input-group-sm'>
+                {php echo tpl_daterange('time', array('sm'=>true,'placeholder'=>'操作时间'),true);}
+            </div>
+        </div>
+
+        <div class="col-sm-7 pull-right">
+            <div class="input-group">
+                <input type="text" class="form-control input-sm" name="keyword" value="{$_GPC['keyword']}"
+                       placeholder="请输入会员信息/操作人信息"/>
+                <span class="input-group-btn">
+                    <button class="btn btn-sm btn-primary" type="submit"> 搜索</button>
+                </span>
+            </div>
+
+        </div>
+    </div>
+
+</form>
+
+<table class="table table-hover table-responsive">
+    <thead class="navbar-inner">
+    <tr>
+        <th style='width:120px;'>会员信息</th>
+        <th style='width:60px;'>积分全返</th>
+        <th style='width:60px;'>全返比例</th>
+        <th style='width:60px;'>积分</th>
+        <th style='width:60px;'>余额</th>
+        <th style='width:100px;'>创建时间</th>
+    </tr>
+    </thead>
+    <tbody>
+    {loop $list $row}
+        <tr>
+            <td data-toggle='tooltip' title='{$row['nickname']}'>
+                <a href="{php echo webUrl('member/list/detail',array('id' => $row['mid']));}" target='_blank'>
+                    <img src='{$row['avatar']}'
+                         style='width:30px;height:30px;padding1px;border:1px solid #ccc'/> {$row['nickname']}
+                </a>
+            </td>
+            <td>{$row['point']}</td>
+            <td>{php echo $row['proportion']*100}%</td>
+            <td>{$row['credit1']}</td>
+            <td>{$row['credit2']}</td>
+            <td>{php echo date('Y-m-d H:i:s',$row['applytime'])}</td>
+            </td>
+        </tr>
+    {/loop}
+    </tbody>
+</table>
+{$pager}
+
+
+{template '_footer'}

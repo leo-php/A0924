@@ -1,0 +1,29 @@
+<div class="form-group">
+    <label class="col-sm-2 control-label">开启返现系统</label>
+    <div class="col-sm-8">
+        <label class="radio-inline"><input type="radio" name="data[status]"
+                                           value="0" {if $data['status'] ==0} checked="checked"{/if} /> 关闭</label>
+        <label class="radio-inline"><input type="radio" name="data[status]"
+                                           value="1" {if $data['status'] ==1} checked="checked"{/if} /> 开启</label>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">收益明细</label>
+    <div class="col-sm-9 col-xs-12">
+        <p class='form-control-static'>
+            <a href='javascript:;' class="js-clip" title='点击复制链接'
+               data-url="{php echo mobileUrl('creditmanagement.log',null,false)}">{php echo mobileUrl('creditmanagement.log',null,true)}</a>
+        </p>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">收益提现</label>
+    <div class="col-sm-9 col-xs-12">
+        <p class='form-control-static'>
+            <a href='javascript:;' class="js-clip" title='点击复制链接'
+               data-url="{php echo mobileUrl('creditmanagement.withdraw',null,false)}">{php echo mobileUrl('creditmanagement.withdraw',null,true)}</a>
+        </p>
+    </div>
+</div>

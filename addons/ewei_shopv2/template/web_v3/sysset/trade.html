@@ -1,0 +1,782 @@
+{template '_header'}
+
+<div class="page-header">当前位置：<span class="text-primary">交易设置</span></div>
+
+<div class="page-content">
+    <form action="" method="post" class="form-horizontal form-validate" enctype="multipart/form-data" >
+        <div class='form-group-title'>线下核销设置</div>
+        <div class="form-group">
+            <label class="col-lg control-label">是否填写联系人</label>
+            <div class="col-sm-9 col-xs-12">
+                {ifp 'creditshop.set.edit'}
+                <label class='radio radio-inline'>
+                    <input type='radio' value='0' name='data[set_realname]'  {if $data['set_realname']==0}checked{/if} /> 显示
+                </label>
+                <label class='radio radio-inline'>
+                    <input type='radio' value='1' name='data[set_realname]' {if $data['set_realname']==1}checked{/if} /> 隐藏
+                </label>
+                {else}
+                <div class='form-control-static'>{if $data['set_realname']==1}隐藏{else}显示{/if}</div>
+                {/if}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg control-label">是否填写联系方式</label>
+            <div class="col-sm-9 col-xs-12">
+                {ifp 'creditshop.set.edit'}
+                <label class='radio radio-inline'>
+                    <input type='radio' value='0' name='data[set_mobile]'  {if $data['set_mobile']==0}checked{/if} /> 显示
+                </label>
+                <label class='radio radio-inline'>
+                    <input type='radio' value='1' name='data[set_mobile]' {if $data['set_mobile']==1}checked{/if} /> 隐藏
+                </label>
+                {else}
+                <div class='form-control-static'>{if $data['set_mobile']==1}隐藏{else}显示{/if}</div>
+                {/if}
+            </div>
+        </div>
+        <div class='form-group-title'>发票设置</div>
+
+        <div class="form-group">
+            <label class="col-lg control-label">支持的发票类型</label>
+            <div class="col-sm-9 col-xs-12">
+                {ifp 'sysset.trade.edit'}
+                <div class="input-group fixsingle-input-group">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" name="data[invoice_entity][]" value="0"
+                               {if $data['invoice_entity'] == 0 || $data['invoice_entity'] == 2}checked{/if}> 纸质发票
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" name="data[invoice_entity][]" value="1"
+                               {if $data['invoice_entity'] == 1 || $data['invoice_entity'] == 2}checked{/if}> 电子发票
+                    </label>
+                </div>
+                <span class='help-block'>当商品支持开票时，买家可以选择以上勾选的类型</span>
+                {else}
+                <div class='form-control-static'>
+
+                </div>
+                {/if}
+            </div>
+        </div>
+        <div class='form-group-title'>自动关闭未付款订单</div>
+
+        <div class="form-group">
+            <label class="col-lg control-label">下单几天后</label>
+            <div class="col-sm-9 col-xs-12">
+                {ifp 'sysset.trade.edit'}
+                <div class="input-group fixsingle-input-group">
+                    <input type="text" name="data[closeorder]" class="form-control" value="{$data['closeorder']}" />
+                    <div class="input-group-addon">天</div>
+                </div>
+                <span class='help-block'>订单下单未付款，n天后自动关闭，空为不自动关闭</span>
+                {else}
+                <input type="hidden" name="data[closeorder]" value="{$data['closeorder']}"/>
+                <div class='form-control-static'>
+                    {if empty($data['closeorder'])}9{else}{$data['closeorder']}{/if} 天
+                </div>
+                {/if}
+            </div>
+        </div>
+
+        <div class='form-group-title'>未付款订单关闭前发送推送信息</div>
+
+        <div class="form-group ">
+            <label class="col-lg control-label">订单关闭前</label>
+            <div class="col-sm-9 col-xs-12">
+                {ifp 'sysset.trade.edit'}
+                <div class="input-group fixsingle-input-group">
+                    <input type="text" name="data[willcloseorder]" class="form-control" value="{$data['willcloseorder']}" />
+                    <div class="input-group-addon">分钟</div>
+                </div>
+                <span class='help-block'>订单下单未付款自动关闭前多少分钟发送推送消息，0或空为默认30分钟。需要前往消息提醒设置中开启对应推送模块</span>
+                {else}
+                <input type="hidden" name="data[willcloseorder]" value="{$data['willcloseorder']}"/>
+                <div class='form-control-static'>
+                    {if empty($data['willcloseorder'])}30{else}{$data['willcloseorder']}{/if} 分钟
+                </div>
+                {/if}
+            </div>
+        </div>
+
+        <div class='form-group-title'>库存预警推送通知</div>
+
+        <div class="form-group">
+            <label class="col-lg control-label">库存少于</label>
+            <div class="col-sm-9 col-xs-12">
+                {ifp 'sysset.trade.edit'}
+                <div class="input-group">
+                    <input type="text" name="data[stockwarn]" class="form-control" value="{$data['stockwarn']}" />
+                    <div class="input-group-addon">件</div>
+                </div>
+                <span class='help-block'>库存低于多少件后,每当减少库存时会为卖家推送一次库存警报,默认为5件</span>
+                {else}
+                <input type="hidden" name="data[stockwarn]" value="{$data['stockwarn']}"/>
+                <div class='form-control-static'>
+                    {if empty($data['stockwarn'])}5{else}{$data['stockwarn']}{/if} 天
+                </div>
+                {/if}
+            </div>
+        </div>
+
+
+        <div class='form-group-title'>自动收货</div>
+
+
+        <div class="form-group">
+            <label class="col-lg control-label">发货几天后</label>
+            <div class="col-sm-9 col-xs-12">
+                {ifp 'sysset.trade.edit'}
+                <div class="input-group fixsingle-input-group">
+                    <input type="text" name="data[receive]" class="form-control" value="{$data['receive']}" />
+                    <div class="input-group-addon">天</div>
+                </div>
+                <span class='help-block'>订单发货后，用户收货的天数，如果在期间未确认收货，系统自动完成收货，空为不自动收货</span>
+                {else}
+                <input type="hidden" name="data[receive]" value="{$data['receive']}"/>
+                <div class='form-control-static'>
+                    {if empty($data['receive'])}9{else}{$data['receive']}{/if} 天
+                </div>
+                {/if}
+            </div>
+        </div>
+        <div class='form-group-title'>交易增强</div>
+        <div class="form-group">
+            <label class="col-lg control-label">开启交易增强功能</label>
+            <div class="col-sm-9 col-xs-12">
+                {ifp 'creditshop.set.edit'}
+                <label class='radio radio-inline'>
+                    <input type='radio' value='0' name='data[shop_strengthen]'  {if $data['shop_strengthen']==0}checked{/if} /> 开启
+                </label>
+                <label class='radio radio-inline'>
+                    <input type='radio' value='1' name='data[shop_strengthen]' {if $data['shop_strengthen']==1}checked{/if} /> 关闭
+                </label>
+                <span class='help-block'>开启后进入商城首页时会自动弹出未支付订单提示, 在创建订单页后退时会询问是否放弃付款</span>
+                {else}
+                <div class='form-control-static'>{if $data['shop_strengthen']==1}关闭{else}开启{/if}</div>
+                {/if}
+            </div>
+        </div>
+
+        <div class='form-group-title'>退款申请</div>
+
+
+
+        <div class="form-group">
+            <label class="col-lg control-label">完成订单几天后</label>
+            <div class="col-sm-9 col-xs-12">
+                {ifp 'sysset.trade.edit'}
+                <div class="input-group fixsingle-input-group">
+                    <input type="text" name="data[refunddays]" class="form-control" value="{$data['refunddays']}" />
+                    <div class="input-group-addon">天</div>
+                </div>
+                <span class='help-block'>订单完成后 ，用户在x天内可以发起退款申请，设置0天不允许完成订单退款</span>
+                {else}
+                <input type="hidden" name="data[refunddays]" value="{$data['refunddays']}"/>
+                <div class='form-control-static'>
+                    {if empty($data['refunddays'])}不允许完成订单退款{else}{$data['refunddays']}{/if} 天
+                </div>
+                {/if}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg control-label">退款说明</label>
+            <div class="col-sm-5 col-xs-12">
+                {ifp 'sysset.trade.edit'}
+                <textarea  name="data[refundcontent]" class="form-control" value="{$data['refundcontent']}" rows="5">{$data['refundcontent']}</textarea>
+                <span class='help-block'>用户在申请退款页面的说明</span>
+                {else}
+                <input type="hidden" name="data[refundcontent]" value="{$data['refundcontent']}"/>
+                <div class='form-control-static'>
+                    {$data['refundcontent']}
+                </div>
+                {/if}
+            </div>
+        </div>
+
+
+
+        <div class='form-group-title'>上门自提设置</div>
+
+        <div class="form-group">
+            <label class="col-lg control-label">上门自提文案</label>
+            <div class="col-sm-9 col-xs-12">
+                {ifp 'sysset.trade.edit'}
+                <div class="input-group fixsingle-input-group">
+                    <input type="text" name="data[pickuptext]" class="form-control" value="{$data['pickuptext']}" placeholder="不填写默认为上门自提"/>
+                </div>
+                <span class='help-block'>显示文案，最多可添加5个字</span>
+                {/if}
+            </div>
+        </div>
+
+        
+        <div class='form-group-title'>余额积分设置</div>
+
+        <div class="form-group">
+            <label class="col-lg control-label">文字</label>
+            <div class="col-sm-9 col-xs-12">
+                {ifp 'sysset.trade.edit'}
+                <div class='input-group fixmore-input-group'>
+                    <span class='input-group-addon'>积分=</span>
+                    <input type="text" name="data[credittext]" class="form-control" value="{php echo empty($data['credittext'])?'积分':$data['credittext']}" />
+                    <span class='input-group-addon'>余额=</span>
+                    <input type="text" name="data[moneytext]" class="form-control"value="{php echo empty($data['moneytext'])?'余额':$data['moneytext']}" />
+                </div>
+                {else}
+
+                <div class='form-control-static'>
+                    积分文字:  {php echo empty($data['credittext'])?'积分':$data['credittext']} 余额文字: {php echo empty($data['moneytext'])?'余额':$data['moneytext']}
+
+                </div>
+                {/if}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-lg control-label">账户充值</label>
+            <div class="col-sm-9 col-xs-12">
+                {ifp 'sysset.trade.edit'}
+                <label class='radio-inline'><input type='radio' name='data[closerecharge]' value='0' {if empty($data['closerecharge'])}checked{/if} onclick="$('.recharge-group').show()"/> 开启</label>
+                <label class='radio-inline'><input type='radio' name='data[closerecharge]' value='1' {if $data['closerecharge']=='1'}checked{/if}  onclick="$('.recharge-group').hide()"/> 关闭</label>
+                <span class='help-block'>是否允许用户对账户余额进行充值</span>
+                {else}
+                <input type="hidden" name="data[withdraw]" value="{$data['withdraw']}"/>
+                <div class='form-control-static'>{if $data['closerechage']==1}关闭{else}开启{/if}</div>
+                {/if}
+            </div>
+        </div>
+
+        <div class="form-group recharge-group" {if $data['closerecharge']=='1'}style="display:none;"{/if}>
+        <label class="col-lg control-label"></label>
+        <div class="col-sm-9 col-xs-12">
+            {ifp 'sysset.trade.edit'}
+            <div class='input-group fixmore-input-group'>
+                <span class='input-group-addon'>充值</span>
+                <input type="text" name="data[money]" class="form-control" value="{$data['money']}" />
+                <span class='input-group-addon'>元 增加</span>
+                <input type="text" name="data[credit]" class="form-control" value="{$data['credit']}" />
+                <span class='input-group-addon'>分</span>
+            </div>
+            <span class='help-block'>用户充值获得的积分,累计形式 比如 充值1元 送1积分,充值200，就送200积分</span>
+            {else}
+            <input type="hidden" name="data[money]" value="{$data['money']}"/>
+            <input type="hidden" name="data[credit]" value="{$data['credit']}"/>
+            <div class='form-control-static'>
+                {if empty($data['money'])}
+                充值无积分
+                {else}
+                {$data['money']} 元增加 {$data['credit']} 积分
+                {/if}
+            </div>
+            {/if}
+        </div>
+</div>
+
+<div class="form-group recharge-group" {if $data['closerecharge']=='1'}style="display:none;"{/if}>
+<label class="col-lg control-label">最低充值金额</label>
+<div class="col-sm-9 col-xs-12">
+    {ifp 'sysset.trade.edit'}
+    <div class="input-group fixsingle-input-group">
+        <input type="text" name="data[minimumcharge]" class="form-control" value="{$data['minimumcharge']}" />
+        <div class="input-group-addon">元</div>
+    </div>
+    <span class='help-block'>账户充值时,最低允许的充值金额</span>
+    <span class='help-block'>例如 最低充值金额设置为10元,只有充值金额大于等于10元时,才允许充值</span>
+    {else}
+    <input type="hidden" name="data[minimumcharge]" value="{$data['minimumcharge']}"/>
+    <div class='form-control-static'>
+        {$data['minimumcharge']}元
+    </div>
+    {/if}
+</div>
+</div>
+
+<div class="form-group">
+    <label class="col-lg control-label">余额提现</label>
+    <div class="col-sm-9 col-xs-12 ">
+        {ifp 'sysset.trade.edit'}
+        <label class='radio-inline'><input type='radio' name='data[withdraw]' value='1' {if $data['withdraw']==1}checked{/if}/> 开启</label>
+        <label class='radio-inline'><input type='radio' name='data[withdraw]' value='0' {if $data['withdraw']==0}checked{/if} /> 关闭</label>
+        <span class='help-block'>是否允许用户将余额提出</span>
+        {else}
+        <input type="hidden" name="data[withdraw]" value="{$data['withdraw']}"/>
+        <div class='form-control-static'>{if $data['withdraw']==1}开启{else}关闭{/if}</div>
+        {/if}
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-lg control-label">余额提现方式</label>
+    <div class="col-sm-9 col-xs-12" >
+        {ifp 'sysset.trade.edit'}
+        <label for="withdrawcashweixin" class="checkbox-inline">
+            <input type="checkbox" name="data[withdrawcashweixin]" value="1" id="withdrawcashweixin" {if !empty($data['withdrawcashweixin'])}checked="true"{/if} /> 提现到微信钱包
+        </label>
+
+        <label for="withdrawcashalipay" class="checkbox-inline">
+            <input type="checkbox" name="data[withdrawcashalipay]" value="1" id="withdrawcashalipay" {if !empty($data['withdrawcashalipay'])}checked="true"{/if} /> 手动提现到支付宝
+        </label>
+
+        <label for="withdrawcashcard" class="checkbox-inline">
+            <input type="checkbox" name="data[withdrawcashcard]" value="1" id="withdrawcashcard" {if !empty($data['withdrawcashcard'])}checked="true"{/if} /> 手动提现到银行卡
+        </label>
+
+        <div class='help-block'>支持的银行请到<a href='{php echo webUrl('commission/bank')}' target='_blank'>【银行设置】</a>进行设置,使用手动提现到银行卡必须设置支持的银行</div>
+
+        <div class='help-block'>提示: 提现方式支持多选</div>
+        {else} <div class='form-control-static'>
+        {if $data['withdrawcashweixin']==1}提现到微信钱包; {/if}
+        {if $data['withdrawcashalipay']==1}手动提现到支付宝; {/if}
+        {if $data['withdrawcashcard']==1}手动提现到银行卡; {/if}
+    </div>
+        {/if}
+    </div>
+</div>
+
+
+
+<div class="form-group">
+    <label class="col-lg control-label">余额提现限制</label>
+    <div class="col-sm-9 col-xs-12">
+        <div class="input-group">
+            {ifp 'sysset.trade.edit'}
+            <span class="input-group-addon">最少</span>
+            <input type="text" name="data[withdrawmoney]" class="form-control" value="{$data['withdrawmoney']}" />
+            <span class="input-group-addon">最大</span>
+            <input type="text" name="data[withdrawmoneymax]" class="form-control" value="{$data['withdrawmoneymax']}" />
+            <!--<span class='help-block'>余额满多少才能提现,空或0不限制</span>-->
+            {else}
+            <input type="hidden" name="data[withdrawmoney]" value="{$data['withdrawmoney']}"/>
+            <div class='form-control-static'>
+                {if empty($data['withdrawmoney'])}不限制{else}{$data['withdrawmoney']} 元 {/if}
+            </div>
+            {/if}
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-lg control-label">余额提现时间</label>
+    <div class="col-sm-10 col-xs-12">
+        <div class="input-group fixmore-input-group" style="width:70%">
+            {ifp 'sysset.trade.edit'}
+            <span class="input-group-addon">每周</span>
+            <select name="data[withdrawday]" class="form-control">
+                <option value="99" {if $data['withdrawday'] == '99'}selected='selected'{/if}>不限</option>
+                <option value="1" {if $data['withdrawday'] == '1'}selected='selected'{/if}>周一</option>
+                <option value="2" {if $data['withdrawday'] == '2'}selected='selected'{/if}>周二</option>
+                <option value="3" {if $data['withdrawday'] == '3'}selected='selected'{/if}>周三</option>
+                <option value="4" {if $data['withdrawday'] == '4'}selected='selected'{/if}>周四</option>
+                <option value="5" {if $data['withdrawday'] == '5'}selected='selected'{/if}>周五</option>
+                <option value="6" {if $data['withdrawday'] == '6'}selected='selected'{/if}>周六</option>
+                <option value="0" {if $data['withdrawday'] == '7'}selected='selected'{/if}>周日</option>
+            </select>
+            <span class="input-group-addon">开始时间</span>
+            <select name="data[withdrawstarthour]" class="form-control">
+                <option value="99" {if $data['withdrawstarthour'] == '99'}selected='selected'{/if}>不限</option>
+                <option value="00" {if $data['withdrawstarthour'] == '00'}selected='selected'{/if}>00</option>
+                <option value="01" {if $data['withdrawstarthour'] == '01'}selected='selected'{/if}>01</option>
+                <option value="02" {if $data['withdrawstarthour'] == '02'}selected='selected'{/if}>02</option>
+                <option value="03" {if $data['withdrawstarthour'] == '03'}selected='selected'{/if}>03</option>
+                <option value="04" {if $data['withdrawstarthour'] == '04'}selected='selected'{/if}>04</option>
+                <option value="05" {if $data['withdrawstarthour'] == '05'}selected='selected'{/if}>05</option>
+                <option value="06" {if $data['withdrawstarthour'] == '06'}selected='selected'{/if}>06</option>
+                <option value="07" {if $data['withdrawstarthour'] == '07'}selected='selected'{/if}>07</option>
+                <option value="08" {if $data['withdrawstarthour'] == '08'}selected='selected'{/if}>08</option>
+                <option value="09" {if $data['withdrawstarthour'] == '09'}selected='selected'{/if}>09</option>
+                <option value="10" {if $data['withdrawstarthour'] == '10'}selected='selected'{/if}>10</option>
+                <option value="11" {if $data['withdrawstarthour'] == '11'}selected='selected'{/if}>11</option>
+                <option value="12" {if $data['withdrawstarthour'] == '12'}selected='selected'{/if}>12</option>
+                <option value="13" {if $data['withdrawstarthour'] == '13'}selected='selected'{/if}>13</option>
+                <option value="14" {if $data['withdrawstarthour'] == '14'}selected='selected'{/if}>14</option>
+                <option value="15" {if $data['withdrawstarthour'] == '15'}selected='selected'{/if}>15</option>
+                <option value="16" {if $data['withdrawstarthour'] == '16'}selected='selected'{/if}>16</option>
+                <option value="17" {if $data['withdrawstarthour'] == '17'}selected='selected'{/if}>17</option>
+                <option value="18" {if $data['withdrawstarthour'] == '18'}selected='selected'{/if}>18</option>
+                <option value="19" {if $data['withdrawstarthour'] == '19'}selected='selected'{/if}>19</option>
+                <option value="20" {if $data['withdrawstarthour'] == '20'}selected='selected'{/if}>20</option>
+                <option value="21" {if $data['withdrawstarthour'] == '21'}selected='selected'{/if}>21</option>
+                <option value="22" {if $data['withdrawstarthour'] == '22'}selected='selected'{/if}>22</option>
+                <option value="23" {if $data['withdrawstarthour'] == '23'}selected='selected'{/if}>23</option>
+            </select>
+            <span class="input-group-addon">:</span>
+            <select name="data[withdrawstartmin]" class="form-control">
+                <option value="00" {if $data['withdrawstartmin'] == '00'}selected='selected'{/if}>00</option>
+                <option value="01" {if $data['withdrawstartmin'] == '01'}selected='selected'{/if}>01</option>
+                <option value="02" {if $data['withdrawstartmin'] == '02'}selected='selected'{/if}>02</option>
+                <option value="03" {if $data['withdrawstartmin'] == '03'}selected='selected'{/if}>03</option>
+                <option value="04" {if $data['withdrawstartmin'] == '04'}selected='selected'{/if}>04</option>
+                <option value="05" {if $data['withdrawstartmin'] == '05'}selected='selected'{/if}>05</option>
+                <option value="06" {if $data['withdrawstartmin'] == '06'}selected='selected'{/if}>06</option>
+                <option value="07" {if $data['withdrawstartmin'] == '07'}selected='selected'{/if}>07</option>
+                <option value="08" {if $data['withdrawstartmin'] == '08'}selected='selected'{/if}>08</option>
+                <option value="09" {if $data['withdrawstartmin'] == '09'}selected='selected'{/if}>09</option>
+                <option value="10" {if $data['withdrawstartmin'] == '10'}selected='selected'{/if}>10</option>
+                <option value="11" {if $data['withdrawstartmin'] == '11'}selected='selected'{/if}>11</option>
+                <option value="12" {if $data['withdrawstartmin'] == '12'}selected='selected'{/if}>12</option>
+                <option value="13" {if $data['withdrawstartmin'] == '13'}selected='selected'{/if}>13</option>
+                <option value="14" {if $data['withdrawstartmin'] == '14'}selected='selected'{/if}>14</option>
+                <option value="15" {if $data['withdrawstartmin'] == '15'}selected='selected'{/if}>15</option>
+                <option value="16" {if $data['withdrawstartmin'] == '16'}selected='selected'{/if}>16</option>
+                <option value="17" {if $data['withdrawstartmin'] == '17'}selected='selected'{/if}>17</option>
+                <option value="18" {if $data['withdrawstartmin'] == '18'}selected='selected'{/if}>18</option>
+                <option value="19" {if $data['withdrawstartmin'] == '19'}selected='selected'{/if}>19</option>
+                <option value="20" {if $data['withdrawstartmin'] == '20'}selected='selected'{/if}>20</option>
+                <option value="21" {if $data['withdrawstartmin'] == '21'}selected='selected'{/if}>21</option>
+                <option value="22" {if $data['withdrawstartmin'] == '22'}selected='selected'{/if}>22</option>
+                <option value="23" {if $data['withdrawstartmin'] == '23'}selected='selected'{/if}>23</option>
+                <option value="24" {if $data['withdrawstartmin'] == '24'}selected='selected'{/if}>24</option>
+                <option value="25" {if $data['withdrawstartmin'] == '25'}selected='selected'{/if}>25</option>
+                <option value="26" {if $data['withdrawstartmin'] == '26'}selected='selected'{/if}>26</option>
+                <option value="27" {if $data['withdrawstartmin'] == '27'}selected='selected'{/if}>27</option>
+                <option value="28" {if $data['withdrawstartmin'] == '28'}selected='selected'{/if}>28</option>
+                <option value="29" {if $data['withdrawstartmin'] == '29'}selected='selected'{/if}>29</option>
+                <option value="30" {if $data['withdrawstartmin'] == '30'}selected='selected'{/if}>30</option>
+                <option value="31" {if $data['withdrawstartmin'] == '31'}selected='selected'{/if}>31</option>
+                <option value="32" {if $data['withdrawstartmin'] == '32'}selected='selected'{/if}>32</option>
+                <option value="33" {if $data['withdrawstartmin'] == '33'}selected='selected'{/if}>33</option>
+                <option value="34" {if $data['withdrawstartmin'] == '34'}selected='selected'{/if}>34</option>
+                <option value="35" {if $data['withdrawstartmin'] == '35'}selected='selected'{/if}>35</option>
+                <option value="36" {if $data['withdrawstartmin'] == '36'}selected='selected'{/if}>36</option>
+                <option value="37" {if $data['withdrawstartmin'] == '37'}selected='selected'{/if}>37</option>
+                <option value="38" {if $data['withdrawstartmin'] == '38'}selected='selected'{/if}>38</option>
+                <option value="39" {if $data['withdrawstartmin'] == '39'}selected='selected'{/if}>39</option>
+                <option value="40" {if $data['withdrawstartmin'] == '40'}selected='selected'{/if}>40</option>
+                <option value="41" {if $data['withdrawstartmin'] == '41'}selected='selected'{/if}>41</option>
+                <option value="42" {if $data['withdrawstartmin'] == '42'}selected='selected'{/if}>42</option>
+                <option value="43" {if $data['withdrawstartmin'] == '43'}selected='selected'{/if}>43</option>
+                <option value="44" {if $data['withdrawstartmin'] == '44'}selected='selected'{/if}>44</option>
+                <option value="45" {if $data['withdrawstartmin'] == '45'}selected='selected'{/if}>45</option>
+                <option value="46" {if $data['withdrawstartmin'] == '46'}selected='selected'{/if}>46</option>
+                <option value="47" {if $data['withdrawstartmin'] == '47'}selected='selected'{/if}>47</option>
+                <option value="48" {if $data['withdrawstartmin'] == '48'}selected='selected'{/if}>48</option>
+                <option value="49" {if $data['withdrawstartmin'] == '49'}selected='selected'{/if}>49</option>
+                <option value="50" {if $data['withdrawstartmin'] == '50'}selected='selected'{/if}>50</option>
+                <option value="51" {if $data['withdrawstartmin'] == '51'}selected='selected'{/if}>51</option>
+                <option value="52" {if $data['withdrawstartmin'] == '52'}selected='selected'{/if}>52</option>
+                <option value="53" {if $data['withdrawstartmin'] == '53'}selected='selected'{/if}>53</option>
+                <option value="54" {if $data['withdrawstartmin'] == '54'}selected='selected'{/if}>54</option>
+                <option value="55" {if $data['withdrawstartmin'] == '55'}selected='selected'{/if}>55</option>
+                <option value="56" {if $data['withdrawstartmin'] == '56'}selected='selected'{/if}>56</option>
+                <option value="57" {if $data['withdrawstartmin'] == '57'}selected='selected'{/if}>57</option>
+                <option value="58" {if $data['withdrawstartmin'] == '58'}selected='selected'{/if}>58</option>
+                <option value="59" {if $data['withdrawstartmin'] == '59'}selected='selected'{/if}>59</option>
+            </select>
+            <span class="input-group-addon">结束时间</span>
+            <select name="data[withdrawendhour]" class="form-control">
+                <option value="99" {if $data['withdrawendhour'] == '99'}selected='selected'{/if}>不限</option>
+                <option value="00" {if $data['withdrawendhour'] == '00'}selected='selected'{/if}>00</option>
+                <option value="01" {if $data['withdrawendhour'] == '01'}selected='selected'{/if}>01</option>
+                <option value="02" {if $data['withdrawendhour'] == '02'}selected='selected'{/if}>02</option>
+                <option value="03" {if $data['withdrawendhour'] == '03'}selected='selected'{/if}>03</option>
+                <option value="04" {if $data['withdrawendhour'] == '04'}selected='selected'{/if}>04</option>
+                <option value="05" {if $data['withdrawendhour'] == '05'}selected='selected'{/if}>05</option>
+                <option value="06" {if $data['withdrawendhour'] == '06'}selected='selected'{/if}>06</option>
+                <option value="07" {if $data['withdrawendhour'] == '07'}selected='selected'{/if}>07</option>
+                <option value="08" {if $data['withdrawendhour'] == '08'}selected='selected'{/if}>08</option>
+                <option value="09" {if $data['withdrawendhour'] == '09'}selected='selected'{/if}>09</option>
+                <option value="10" {if $data['withdrawendhour'] == '10'}selected='selected'{/if}>10</option>
+                <option value="11" {if $data['withdrawendhour'] == '11'}selected='selected'{/if}>11</option>
+                <option value="12" {if $data['withdrawendhour'] == '12'}selected='selected'{/if}>12</option>
+                <option value="13" {if $data['withdrawendhour'] == '13'}selected='selected'{/if}>13</option>
+                <option value="14" {if $data['withdrawendhour'] == '14'}selected='selected'{/if}>14</option>
+                <option value="15" {if $data['withdrawendhour'] == '15'}selected='selected'{/if}>15</option>
+                <option value="16" {if $data['withdrawendhour'] == '16'}selected='selected'{/if}>16</option>
+                <option value="17" {if $data['withdrawendhour'] == '17'}selected='selected'{/if}>17</option>
+                <option value="18" {if $data['withdrawendhour'] == '18'}selected='selected'{/if}>18</option>
+                <option value="19" {if $data['withdrawendhour'] == '19'}selected='selected'{/if}>19</option>
+                <option value="20" {if $data['withdrawendhour'] == '20'}selected='selected'{/if}>20</option>
+                <option value="21" {if $data['withdrawendhour'] == '21'}selected='selected'{/if}>21</option>
+                <option value="22" {if $data['withdrawendhour'] == '22'}selected='selected'{/if}>22</option>
+                <option value="23" {if $data['withdrawendhour'] == '23'}selected='selected'{/if}>23</option>
+            </select>
+            <span class="input-group-addon">:</span>
+            <select name="data[withdrawendmin]" class="form-control">
+                <option value="00" {if $data['withdrawendmin'] == '00'}selected='selected'{/if}>00</option>
+                <option value="01" {if $data['withdrawendmin'] == '01'}selected='selected'{/if}>01</option>
+                <option value="02" {if $data['withdrawendmin'] == '02'}selected='selected'{/if}>02</option>
+                <option value="03" {if $data['withdrawendmin'] == '03'}selected='selected'{/if}>03</option>
+                <option value="04" {if $data['withdrawendmin'] == '04'}selected='selected'{/if}>04</option>
+                <option value="05" {if $data['withdrawendmin'] == '05'}selected='selected'{/if}>05</option>
+                <option value="06" {if $data['withdrawendmin'] == '06'}selected='selected'{/if}>06</option>
+                <option value="07" {if $data['withdrawendmin'] == '07'}selected='selected'{/if}>07</option>
+                <option value="08" {if $data['withdrawendmin'] == '08'}selected='selected'{/if}>08</option>
+                <option value="09" {if $data['withdrawendmin'] == '09'}selected='selected'{/if}>09</option>
+                <option value="10" {if $data['withdrawendmin'] == '10'}selected='selected'{/if}>10</option>
+                <option value="11" {if $data['withdrawendmin'] == '11'}selected='selected'{/if}>11</option>
+                <option value="12" {if $data['withdrawendmin'] == '12'}selected='selected'{/if}>12</option>
+                <option value="13" {if $data['withdrawendmin'] == '13'}selected='selected'{/if}>13</option>
+                <option value="14" {if $data['withdrawendmin'] == '14'}selected='selected'{/if}>14</option>
+                <option value="15" {if $data['withdrawendmin'] == '15'}selected='selected'{/if}>15</option>
+                <option value="16" {if $data['withdrawendmin'] == '16'}selected='selected'{/if}>16</option>
+                <option value="17" {if $data['withdrawendmin'] == '17'}selected='selected'{/if}>17</option>
+                <option value="18" {if $data['withdrawendmin'] == '18'}selected='selected'{/if}>18</option>
+                <option value="19" {if $data['withdrawendmin'] == '19'}selected='selected'{/if}>19</option>
+                <option value="20" {if $data['withdrawendmin'] == '20'}selected='selected'{/if}>20</option>
+                <option value="21" {if $data['withdrawendmin'] == '21'}selected='selected'{/if}>21</option>
+                <option value="22" {if $data['withdrawendmin'] == '22'}selected='selected'{/if}>22</option>
+                <option value="23" {if $data['withdrawendmin'] == '23'}selected='selected'{/if}>23</option>
+                <option value="24" {if $data['withdrawendmin'] == '24'}selected='selected'{/if}>24</option>
+                <option value="25" {if $data['withdrawendmin'] == '25'}selected='selected'{/if}>25</option>
+                <option value="26" {if $data['withdrawendmin'] == '26'}selected='selected'{/if}>26</option>
+                <option value="27" {if $data['withdrawendmin'] == '27'}selected='selected'{/if}>27</option>
+                <option value="28" {if $data['withdrawendmin'] == '28'}selected='selected'{/if}>28</option>
+                <option value="29" {if $data['withdrawendmin'] == '29'}selected='selected'{/if}>29</option>
+                <option value="30" {if $data['withdrawendmin'] == '30'}selected='selected'{/if}>30</option>
+                <option value="31" {if $data['withdrawendmin'] == '31'}selected='selected'{/if}>31</option>
+                <option value="32" {if $data['withdrawendmin'] == '32'}selected='selected'{/if}>32</option>
+                <option value="33" {if $data['withdrawendmin'] == '33'}selected='selected'{/if}>33</option>
+                <option value="34" {if $data['withdrawendmin'] == '34'}selected='selected'{/if}>34</option>
+                <option value="35" {if $data['withdrawendmin'] == '35'}selected='selected'{/if}>35</option>
+                <option value="36" {if $data['withdrawendmin'] == '36'}selected='selected'{/if}>36</option>
+                <option value="37" {if $data['withdrawendmin'] == '37'}selected='selected'{/if}>37</option>
+                <option value="38" {if $data['withdrawendmin'] == '38'}selected='selected'{/if}>38</option>
+                <option value="39" {if $data['withdrawendmin'] == '39'}selected='selected'{/if}>39</option>
+                <option value="40" {if $data['withdrawendmin'] == '40'}selected='selected'{/if}>40</option>
+                <option value="41" {if $data['withdrawendmin'] == '41'}selected='selected'{/if}>41</option>
+                <option value="42" {if $data['withdrawendmin'] == '42'}selected='selected'{/if}>42</option>
+                <option value="43" {if $data['withdrawendmin'] == '43'}selected='selected'{/if}>43</option>
+                <option value="44" {if $data['withdrawendmin'] == '44'}selected='selected'{/if}>44</option>
+                <option value="45" {if $data['withdrawendmin'] == '45'}selected='selected'{/if}>45</option>
+                <option value="46" {if $data['withdrawendmin'] == '46'}selected='selected'{/if}>46</option>
+                <option value="47" {if $data['withdrawendmin'] == '47'}selected='selected'{/if}>47</option>
+                <option value="48" {if $data['withdrawendmin'] == '48'}selected='selected'{/if}>48</option>
+                <option value="49" {if $data['withdrawendmin'] == '49'}selected='selected'{/if}>49</option>
+                <option value="50" {if $data['withdrawendmin'] == '50'}selected='selected'{/if}>50</option>
+                <option value="51" {if $data['withdrawendmin'] == '51'}selected='selected'{/if}>51</option>
+                <option value="52" {if $data['withdrawendmin'] == '52'}selected='selected'{/if}>52</option>
+                <option value="53" {if $data['withdrawendmin'] == '53'}selected='selected'{/if}>53</option>
+                <option value="54" {if $data['withdrawendmin'] == '54'}selected='selected'{/if}>54</option>
+                <option value="55" {if $data['withdrawendmin'] == '55'}selected='selected'{/if}>55</option>
+                <option value="56" {if $data['withdrawendmin'] == '56'}selected='selected'{/if}>56</option>
+                <option value="57" {if $data['withdrawendmin'] == '57'}selected='selected'{/if}>57</option>
+                <option value="58" {if $data['withdrawendmin'] == '58'}selected='selected'{/if}>58</option>
+                <option value="59" {if $data['withdrawendmin'] == '59'}selected='selected'{/if}>59</option>
+            </select>
+            {else}
+
+            {/if}
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-lg control-label">余额提现时间间距</label>
+    <div class="col-sm-9 col-xs-12">
+        <div class="input-group fixsingle-input-group">
+            {ifp 'sysset.trade.edit'}
+            <input type="text" name="data[withdraw_less_day]" class="form-control" value="{$data['withdraw_less_day']}" /> <span class="input-group-addon">天</span>
+            {else}
+            <input type="hidden" name="data[withdraw_less_day]" value="{$data['withdraw_less_day']}"/>
+            <div class='form-control-static'>
+                {if empty($data['withdrawmoney'])}不限制{else}{$data['withdrawmoney']} 元 {/if}
+            </div>
+            {/if}
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-lg control-label">余额提现手续费</label>
+    <div class="col-sm-9 col-xs-12">
+        {ifp 'sysset.trade.edit'}
+        <div class="input-group fixmore-input-group">
+            <input type="text" name="data[withdrawcharge]" class="form-control" value="{$data['withdrawcharge']}" />
+            <div class="input-group-addon">%</div>
+        </div>
+        <span class='help-block'>余额提现时,扣除的手续费.空为不扣除手续费</span>
+        {else}
+        <input type="hidden" name="data[withdrawcharge]" value="{$data['withdrawcharge']}"/>
+        <div class='form-control-static'>
+            {$data['withdrawcharge']}%
+        </div>
+        {/if}
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-lg control-label">免手续费金额区间</label>
+    <div class="col-sm-9 col-xs-12">
+        {ifp 'sysset.trade.edit'}
+        <div class='input-group fixmore-input-group'>
+            <span class='input-group-addon'>开始金额￥</span>
+            <input type="text" name="data[withdrawbegin]" class="form-control" value="{$data['withdrawbegin']}" />
+            <span class='input-group-addon'>结束金额￥</span>
+            <input type="text" name="data[withdrawend]" class="form-control" value="{$data['withdrawend']}" />
+        </div>
+        <span class='help-block'>当手续费金额在此区间内时,不扣除手续费. 结束金额 必须大于 开始金额才能生效</span>
+        <span class='help-block'>例如 设置开始金额0元 结束金额5元,只有手续费金额高于5元时,才扣除</span>
+        {else}
+        <input type="hidden" name="data[withdrawbegin]" value="{$data['withdrawbegin']}"/>
+        <input type="hidden" name="data[withdrawend]" value="{$data['withdrawend']}"/>
+        <div class='form-control-static'>
+            {$data['withdrawbegin']} 元 - {$data['withdrawend']}元
+        </div>
+        {/if}
+    </div>
+</div>
+
+<div class="form-group recharge-group">
+    <label class="col-lg control-label">会员积分上限</label>
+    <div class="col-sm-9 col-xs-12">
+        {ifp 'sysset.trade.edit'}
+        <div class="input-group fixsingle-input-group">
+            <input type="number" name="data[maxcredit]" class="form-control" value="{php echo intval($data['maxcredit'])}" />
+            <div class="input-group-addon">积分</div>
+        </div>
+        <span class='help-block text-danger'>会员最高积分，0为不限制(会员积分大于等于此值时将无法继续增加，后台手动充值不限制，已持有积分不限制)</span>
+        {else}
+        <input type="hidden" name="data[maxcredit]" value="{$data['maxcredit']}"/>
+        <div class='form-control-static'>
+            {$data['maxcredit']}积分
+        </div>
+        {/if}
+    </div>
+</div>
+
+<div class='form-group-title'>评价</div>
+
+<div class="form-group">
+    <label class="col-lg control-label">订单评价</label>
+    <div class="col-sm-9 col-xs-12">
+        {ifp 'sysset.trade.edit'}
+        <label class='radio-inline'><input type='radio' name='data[closecomment]' value='0' {if empty($data['closecomment'])}checked{/if} /> 允许</label>
+        <label class='radio-inline'><input type='radio' name='data[closecomment]' value='1' {if $data['closecomment']=='1'}checked{/if}  /> 不允许</label>
+        <span class='help-block'>是否允许用户对订单进行评价</span>
+        {else}
+        <input type="hidden" name="data[closecomment]" value="{$data['closecomment']}"/>
+        <div class='form-control-static'>{if $data['closecomment']==1}不允许{else}允许{/if}</div>
+        {/if}
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-lg control-label">显示评价 </label>
+    <div class="col-sm-9 col-xs-12">
+        {ifp 'sysset.trade.edit'}
+        <label class='radio-inline'><input type='radio' name='data[closecommentshow]' value='0' {if empty($data['closecommentshow'])}checked{/if}/> 显示</label>
+        <label class='radio-inline'><input type='radio' name='data[closecommentshow]' value='1' {if $data['closecommentshow']=='1'}checked{/if} /> 关闭</label>
+        <span class='help-block'>是否允许商品详情页面显示评价</span>
+        {else}
+        <input type="hidden" name="data[closecommentshow]" value="{$data['closecommentshow']}"/>
+        <div class='form-control-static'>{if $data['closecommentshow']==1}关闭{else}显示{/if}</div>
+        {/if}
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-lg control-label">评价免审核 </label>
+    <div class="col-sm-9 col-xs-12">
+        {ifp 'sysset.trade.edit'}
+        <label class='radio-inline'><input type='radio' name='data[commentchecked]' value='1' {if $data['commentchecked']=='1'}checked{/if} /> 是</label>
+        <label class='radio-inline'><input type='radio' name='data[commentchecked]' value='0' {if empty($data['commentchecked'])}checked{/if}/> 否</label>
+        <span class='help-block'>用户发表的评价是否免审核</span>
+        {else}
+        <input type="hidden" name="data[commentchecked]" value="{$data['commentchecked']}"/>
+        <div class='form-control-static'>{if $data['commentchecked']==1}是{else}否{/if}</div>
+        {/if}
+    </div>
+</div>
+
+<div class='form-group-title'>获取微信共享收货地址</div>
+
+
+
+<div class='panel-body'>
+
+    <div class="form-group">
+        <label class="col-lg control-label">状态</label>
+        <div class="col-sm-9 col-xs-12">
+            {ifp 'sysset.trade.edit'}
+            <label class='radio-inline'><input type='radio' name='data[shareaddress]' value='1' {if $data['shareaddress']==1}checked{/if}/> 开启</label>
+            <label class='radio-inline'><input type='radio' name='data[shareaddress]' value='0' {if $data['shareaddress']==0}checked{/if} /> 关闭</label>
+            <span class='help-block'>是否在用户添加收货地址时候获取用户的微信收货地址</span>
+            {else}
+            <input type="hidden" name="data[shareaddress]" value="{$data['shareaddress']}"/>
+            <div class='form-control-static'>{if $data['shareaddress']==1}开启{else}关闭{/if}</div>
+            {/if}
+        </div>
+    </div>
+</div>
+
+
+<div class='form-group-title'>限时购名称</div>
+
+
+
+<div class='panel-body'>
+
+    <div class="form-group">
+        <label class="col-lg control-label">限时购名称</label>
+        <div class="col-sm-9 col-xs-12">
+            {ifp 'sysset.trade.edit'}
+            <input  name="data[istimetext]" class="form-control"  value="{php echo empty($data['istimetext'])?'限时购':$data['istimetext']}" />
+            <span class='help-block'>商品详情页面限时购名称前缀 ,默认为"限时购" ,商品可单独设置</span>
+            {else}
+            <input type="hidden" name="data[istimetext]" value="{$data['istimetext']}"/>
+            <div class='form-control-static'>
+                {$data['istimetext']}
+            </div>
+            {/if}
+        </div>
+    </div>
+</div>
+
+
+<div class='form-group-title'>商城不配送区域</div>
+
+<div class="form-group">
+    <label class="col-lg control-label">不配送区域</label>
+    <div class="col-sm-9 col-xs-12">
+        {ifp 'sysset.trade.edit'}
+        <div id="areas" class="form-control-static">{$data[nodispatchareas]}</div>
+        <a href="javascript:;" class="btn btn-default" onclick="selectAreas()">选择地区</a>
+        <input type="hidden" id='selectedareas' name="data[nodispatchareas]" value="{$data[nodispatchareas]}" />
+        <input type="hidden" id='selectedareas_code' name="data[nodispatchareas_code]" value="{$data[nodispatchareas_code]}" />
+        {else}
+        <div class='form-control-static'>{$data[nodispatchareas]}</div>
+        {/if}
+    </div>
+</div>
+
+<div class='form-group-title'>单品退换</div>
+<div class='panel-body'>
+
+    <div class="form-group">
+        <label class="col-lg control-label">开启单品退换功能</label>
+        <div class="col-sm-9 col-xs-12">
+            {ifp 'sysset.trade.edit'}
+            <label class='radio-inline'><input type='radio' name='data[single_refund]' value='1' {if $data['single_refund']==1}checked{/if}/> 开启</label>
+            <label class='radio-inline'><input type='radio' name='data[single_refund]' value='0' {if $data['single_refund']==0}checked{/if} /> 关闭</label>
+            <span class='help-block'>开启后，订单支持单件商品退换，订单优惠金额按比例均摊至每件商品</span>
+            {else}
+            <input type="hidden" name="data[single_refund]" value="{$data['single_refund']}"/>
+            <div class='form-control-static'>{if $data['single_refund']==1}开启{else}关闭{/if}</div>
+            {/if}
+        </div>
+    </div>
+</div>
+
+
+
+<div class="form-group">
+    <label class="col-lg control-label"></label>
+    <div class="col-sm-9 col-xs-12">
+        {ifp 'sysset.trade.edit'}
+        <input type="submit" value="提交" class="btn btn-primary"  />
+        {/if}
+    </div>
+</div>
+
+
+</form>
+</div>
+
+{if empty($new_area)}
+{template 'shop/selectareas'}
+{else}
+{template 'shop/selectareasNew'}
+{/if}
+
+{template '_footer'}     

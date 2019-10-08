@@ -1,0 +1,115 @@
+{template '_header'}
+<style>
+    .popover{
+        width:170px;
+        font-size:12px;
+        line-height: 21px;
+        color: #0d0706;
+    }
+    .popover span{
+        color: #b9b9b9;
+    }
+    .nickname{
+        display: inline-block;
+        max-width:200px;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+    .tooltip-inner{
+        border:none;
+    }
+</style>
+<div class="page-header">当前位置：<span class="text-primary">线下进货审核</span></div>
+<div class="page-content">
+    {if empty($list)}
+        <div class="panel panel-default">
+            <div class="panel-body empty-data">未查询到相关数据</div>
+        </div>
+    {else}
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-responsive">
+                    <thead>
+                    <tr>
+                        <th style="">用户名</th>
+                        <th style="">等级</th>
+                        <th style="">申请时间</th>
+                        <th style="">状态</th>
+                        <th style="">进货金额</th>
+                        <th style="width: 125px;text-align: center;">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {loop $list $row}
+                        <tr>
+                            <td>{$row['user']['nickname']}</td>
+                            <td>{$row['levelname']}</td>
+                            <td>{php echo date("Y-m-d H:i", $row['create_time'])}</td>
+                            <td>
+                                {if $row['status'] == 1}
+                                审核中
+                                {else if $row['status'] == 2}
+                                已通过
+                                {else if $row['status'] == 3}
+                                已拒绝
+                                {/if}
+                            </td>
+                            <td>{$row['total_price']}</td>
+                            <td style="overflow:visible;text-align: center;">
+                                <div class="btn-group">
+                                    {ifp 'member.list.edit'}
+                                        {if $row['status'] == 1}
+                                        <a class="btn  btn-op btn-operation" href="{php echo webUrl('member/linepayApply/successApply', array('id' => $row['id']))}" data-confirm="确定要通过该审核吗？">
+                                            <span data-toggle="tooltip" data-placement="top" title="" data-original-title="去审核" >
+                                                <i class='icow icow-bianji2'></i>
+                                            </span>
+                                        </a>
+                                        <!--<a class="btn btn-op btn-operation" href="javascript:reject_apply({$row['id']})" data-confirm="确定要拒绝该审核吗？">-->
+                                                 <!--<span data-toggle="tooltip" data-placement="top" title="" data-original-title="拒绝审核">-->
+                                                   <!--<i class='icow icow-shanchu1'></i>-->
+                                                <!--</span>-->
+                                        <!--</a>-->
+                                        {/if}
+                                    {/if}
+                                </div>
+                            </td>
+                        </tr>
+                        {/loop}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {/if}
+</div>
+{$pager}
+<script language="javascript">
+    {if $opencommission}
+    require(['bootstrap'], function () {
+        $("[rel=pop]").popover({
+            trigger: 'manual',
+            placement: 'right',
+            title: $(this).data('title'),
+            html: 'true',
+            content: $(this).data('content'),
+            animation: false
+        }).on("mouseenter", function () {
+            var _this = this;
+            $(this).popover("show");
+            $(this).siblings(".popover").on("mouseleave", function () {
+                $(_this).popover('hide');
+            });
+        }).on("mouseleave", function () {
+            var _this = this;
+            setTimeout(function () {
+                if (!$(".popover:hover").length) {
+                    $(_this).popover("hide")
+                }
+            }, 100);
+        });
+    });
+    {/if}
+
+</script>
+{template '_footer'}

@@ -1,0 +1,99 @@
+{template '_header'}
+<div class="page-heading">
+	<span class="pull-right">
+	</span>
+    <h2>批量充值日志
+        <small>{if $total}总数: <span class="text-danger">{$total} </span>{/if}</small>
+    </h2>
+</div>
+
+<form action="./index.php" method="get" class="form-horizontal" role="form">
+    <input type="hidden" name="c" value="site">
+    <input type="hidden" name="a" value="entry">
+    <input type="hidden" name="m" value="ewei_shop">
+    <input type="hidden" name="do" value="web">
+    <input type="hidden" name="r" value="yet.ylist">
+    <div class="page-toolbar row m-b-sm m-t-sm">
+        <div class="col-sm-4">
+        </div>
+        <div class="col-sm-6 pull-right">
+            <select name="category" class='form-control input-sm select-sm select2' style="width:150px;">
+                <option value="" {if $_GPC['category'] == ''} selected{/if}>类型</option>
+                {loop $cat_list $key=>$val}
+                    <option value="{$key}"
+                            {if $_GPC['category']==$key}selected="selected"{/if}>{$val}</option>
+                {/loop}
+            </select>
+            <div class="input-group">
+                <input type="text" class="input-sm form-control" name='keyword' value="{$_GPC['keyword']}"
+                       placeholder="请输入用户关键词"> <span class="input-group-btn">
+                                     <button class="btn btn-sm btn-primary" type="submit"> 搜索</button> </span>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- 文章列表 -->
+{if count($list)>0}
+    <table class="table table-hover table-responsive">
+        <thead>
+        <tr>
+            <th style="width:40px;">ID</th>
+            <th style="width:80px;">充值批号</th>
+            <th style="width:80px;">用户信息</th>
+            <th style="width:80px;">类型</th>
+            <th style="width:80px;">等级</th>
+
+            <th style="width:100px;">充值金额</th>
+            <th style="width:100px;">会员积分</th>
+            <th style="width:120px;">充值日期</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {loop $list $row}
+            <tr>
+                <td>
+                    {$row['id']}
+                </td>
+                <td>
+                    {$row['send_sn']}
+                </td>
+                <td>
+                    {if !empty($row['avatar'])}
+                        <img src='{$row['avatar']}' style='width:30px;height:30px;padding1px;border:1px solid #ccc' />
+                    {/if}
+                    {if empty($row['nickname'])}未更新{else}{$row['nickname']}{/if}
+                    </div>
+                </td>
+                <td>
+                    {php echo isset($cat_list[$row['type']])?$cat_list[$row['type']]:'-' }
+                </td>
+                <td>
+                    {php echo ($row['level']==0)?'默认等级':$level[$row['type']][$row['level']]}
+                </td>
+                <td>
+                    {$row['send_money']}
+                </td>
+                <td>
+                    {$row['credit']}
+                </td>
+                <td>
+                    {$row['created_at']}
+                </td>
+
+            </tr>
+        {/loop}
+        </tbody>
+    </table>
+    {$pager}
+{else}
+    <div class='panel panel-default'>
+        <div class='panel-body' style='text-align: center;padding:30px;'>
+            暂时没有数据!
+        </div>
+    </div>
+{/if}
+</form>
+
+{template '_footer'}

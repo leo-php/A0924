@@ -1,0 +1,44 @@
+{template '_header'}
+<div class='fui-page  fui-page-current member-cart-page'>
+    <div class="fui-header">
+        <div class="fui-header-left">
+            <a class="back" onclick='location.back()'></a>
+        </div>
+        <div class="title">商家购置积分</div>
+        <div class="fui-header-right">&nbsp;</div>
+    </div>
+
+    <div class='fui-content' style='margin-top:5px;'>
+        <div class="fui-cell-group">
+            <div class="fui-cell">
+                <div class="fui-cell-text"><p>积分购置费：10%</p></div>
+            </div>
+        </div>
+
+        <div class="fui-cell-group">
+            <form action="" method="post" id="sub">
+                <div class="fui-cell must ">
+                    <div class="fui-cell-label ">会员ID</div>
+                    <div class="fui-cell-info"><input type="number" class='fui-input' id='post_id' name='post_id'
+                                                      placeholder="请输入会员ID"/></div>
+                </div>
+
+                <div class="fui-cell must">
+                    <div class="fui-cell-label">消费金额</div>
+                    <div class="fui-cell-info"><input type="number" class='fui-input' id='post_price' name='post_price'
+                                                      placeholder="请输入线下消费金额"/></div>
+                </div>
+            </form>
+        </div>
+
+        <a href='#' id='btn-submit' class='btn btn-success block'>确认购买</a>
+    </div>
+</div>
+
+<script language='javascript'>
+    require(['../addons/zm_shop/plugin/xfqf/static/buy.js'], function (modal) {
+        modal.init();
+    });
+</script>
+
+{template '_footer'}

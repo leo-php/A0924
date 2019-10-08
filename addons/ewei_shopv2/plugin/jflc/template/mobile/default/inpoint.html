@@ -1,0 +1,113 @@
+{template '_header'}
+{template 'commission/common'}
+<script>document.title = "转入投资账户"; </script>
+<div class='fui-page  fui-page-current member-cart-page'>
+    <div class="fui-header">
+        <div class="fui-header-left">
+            <a class="back"></a>
+        </div>
+        <div class="title">转入投资账户</div>
+        <div class="fui-header-right">&nbsp;</div>
+    </div>
+
+    <div class='fui-content' style='margin-top:5px;'>
+        <div class="fui-cell-group">
+            <div class="fui-cell">
+                <div class="fui-cell-text">当前积分：</div>
+                <div class="fui-cell-info">{php echo intval($member['credit1'])}</div>
+            </div>
+        </div>
+
+        <div class="fui-cell-group">
+            <form action="" method="post" id="sub">
+                <input type="hidden" name="token" value="{$_W['token']}"/>
+
+                <div class="fui-cell weui_cells_form">
+                    <div class="fui-cell-text ">投资积分</div>
+                    <div class="fui-cell-info">
+                        <input type="tel" class='fui-input' id='post_num' name='post_num'
+                               placeholder="请输入积分"
+                               value=""/>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="fui-cell-group">
+            <div class="fui-cell small ">
+                <div class="fui-cell-info">
+
+                    <label class="checkbox-inline">
+                        <input type="checkbox" class="fui-checkbox-primary" id="agree" {if !empty($reg)}checked{/if}/>
+                        我已经阅读并了解了<a id="btn-apply" style="color:#337ab7;">【{$set['applytitle']}】</a>。
+                    </label>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="pop-apply-hidden" style="display: none;">
+            <div class="verify-pop pop">
+                <div class="close"><i class="icon icon-roundclose"></i></div>
+                <div class="qrcode">
+                    <div class="inner">
+                        <div class="title">{$set['applytitle']}</div>
+                        <div class="text">{php echo html_entity_decode($set['applycontent'])}</div>
+                    </div>
+                    <div class="inner-btn" style="padding: 0.5rem;">
+                        <div class="btn btn-danger" style="width: 100%; margin: 0;">我已阅读</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class='btn btn-success block btn-pay' style="width: 96%" id="showTooltips">确认提交</button>
+    </div>
+
+
+</div>
+
+<script>
+    $("#showTooltips").click(function () {
+
+        var post_num = $('#post_num').val();
+        var args = {post_num:post_num};
+        if (!$('#agree').prop('checked')) {
+            FoxUI.toast.show('请阅读并了解【{$set['applytitle']}】!');
+            return
+        }
+        if (!post_num || !/\d+/.test(post_num)) {
+            FoxUI.toast.show('请输入转入积分');
+            return
+        }
+        $.getJSON('{php echo mobileUrl('jflc.inpoint',array(),true)}', args, function (data) {
+            var status = data.status;
+            if (status == 1) {
+                FoxUI.toast.show('积分转入成功');
+                location.href = core.getUrl('member')
+            } else {
+                FoxUI.toast.show(data.result.message);
+            }
+        });
+
+    });
+
+    $("#btn-apply").unbind('click').click(function () {
+        var html = $(".pop-apply-hidden").html();
+        container = new FoxUIModal({
+            content: html, extraClass: "popup-modal", maskClick: function () {
+                container.close()
+            }
+        });
+        container.show();
+        $('.verify-pop').find('.close').unbind('click').click(function () {
+            container.close()
+        });
+        $('.verify-pop').find('.btn').unbind('click').click(function () {
+            container.close()
+        })
+    })
+</script>
+{template '_footer'}

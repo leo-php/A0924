@@ -1,0 +1,44 @@
+<div class="form-group">
+    <label class="col-sm-2 control-label">默认收益</label>
+    <div class="col-sm-9 col-xs-12">
+        {ifp 'jflc.set.edit'}
+        <div class="input-group">
+            <input type='text' class='form-control' name='data[default]' value="{$default}"/>
+            <div class="input-group-addon">%</div>
+        </div>
+        {else}
+        <div class='form-control-static'>{$default}</div>
+        {/if}
+        <span class="help-block">当详细设置未设置时，以默认收益计算</span>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">详细设置</label>
+    <div class="col-sm-9 col-xs-12">
+        <table class="table table-hover table-responsive">
+            <thead class="navbar-inner">
+            <tr>
+                <th style="width:150px;">日期</th>
+                <th>名称</th>
+            </tr>
+            </thead>
+            <tbody>
+            {loop $list $row}
+                <tr>
+                    <td>{$row['date']}</td>
+                    <td>
+                        <div class="input-group">
+                            <input type="hidden" name="date[{$row['index']}][id]" value="{$row['id']}" />
+                            <input type="hidden" name="date[{$row['index']}][date]" value="{$row['date']}" />
+                            <input type="text" name="date[{$row['index']}][proportion]" value="{$row['proportion']}"
+                                   class="form-control"/>
+                            <div class="input-group-addon">%</div>
+                        </div>
+                    </td>
+                </tr>
+            {/loop}
+            </tbody>
+        </table>
+    </div>
+</div>

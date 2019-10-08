@@ -1,0 +1,7 @@
+<div class='menu-header'>{php echo $this->plugintitle}</div>
+
+<ul>
+  <li {if $_W[ 'action']=='log' }class="active" {/if}><a href="{php echo webUrl('yet/log')}">转账日志</a></li>
+</ul>
+<div class='menu-header'>其它设置</div>
+<li {if $_W['routes']=='yet.set'}class="active"{/if}><a href="{php echo webUrl('yet/set')}">基础设置</a></li>

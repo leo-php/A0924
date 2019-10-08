@@ -1,0 +1,91 @@
+{template '_header'}
+<div class="page-heading">
+	<span class="pull-right">
+	</span>
+    <h2>会员转赠日志
+        <small>{if $total}总数: <span class="text-danger">{$total} </span>{/if}</small>
+    </h2>
+</div>
+
+<form action="./index.php" method="get" class="form-horizontal" role="form">
+    <input type="hidden" name="c" value="site">
+    <input type="hidden" name="a" value="entry">
+    <input type="hidden" name="m" value="ewei_shop">
+    <input type="hidden" name="do" value="web">
+    <input type="hidden" name="r" value="yet.log">
+    <div class="page-toolbar row m-b-sm m-t-sm">
+        <div class="col-sm-4">
+        </div>
+        <div class="col-sm-6 pull-right">
+
+            <div class="input-group">
+                <input type="text" class="input-sm form-control" name='keyword' value="{$_GPC['keyword']}"
+                       placeholder="请输入用户关键词"> <span class="input-group-btn">
+                                     <button class="btn btn-sm btn-primary" type="submit"> 搜索</button> </span>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- 文章列表 -->
+{if count($list)>0}
+    <table class="table table-hover table-responsive">
+        <thead>
+        <tr>
+            <th style="width:40px;">ID</th>
+            <th style="width:80px;">用户信息</th>
+            <th style="width:80px;">用户积分</th>
+            <th style="width:80px;">转赠用户</th>
+
+            <th style="width:80px;">用户积分</th>
+            <th style="width:80px;">转赠积分</th>
+            <th style="width:120px;">充值日期</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {loop $list $row}
+            <tr>
+                <td>
+                    {$row['id']}
+                </td>
+                <td>
+                    {if !empty($row['avatar'])}
+                        <img src='{$row['avatar']}' style='width:30px;height:30px;padding1px;border:1px solid #ccc' />
+                    {/if}
+                    {if empty($row['nickname'])}未更新{else}{$row['nickname']}{/if}
+                </td>
+                <td>
+                    {$row['credit']}
+                </td>
+                <td>
+                    {if !empty($row['avatar2'])}
+                        <img src='{$row['avatar2']}' style='width:30px;height:30px;padding1px;border:1px solid #ccc' />
+                    {/if}
+                    {if empty($row['nickname2'])}未更新{else}{$row['nickname2']}{/if}
+                </td>
+                <td>
+                    {$row['credit2']}
+                </td>
+                <td>
+                    {$row['send_money']}
+                </td>
+                <td>
+                    {$row['created_at']}
+                </td>
+
+            </tr>
+        {/loop}
+        </tbody>
+    </table>
+    {$pager}
+{else}
+    <div class='panel panel-default'>
+        <div class='panel-body' style='text-align: center;padding:30px;'>
+            暂时没有数据!
+        </div>
+    </div>
+{/if}
+</form>
+
+{template '_footer'}

@@ -1,0 +1,94 @@
+{template '_header'}
+{template 'commission/common'}
+<div class="fui-page fui-page-current page-commission-index ">
+    <div class="fui-header">
+        <div class="fui-header-left">
+            <a class="back"></a>
+        </div>
+        <div class="title">收益提现</div>
+        <div class="fui-header-right"></div>
+    </div>
+    <div class="fui-content navbar">
+        <div class="headinfo">
+            <div class='fui-list detail'>
+                <div class='fui-list-inner'>
+                    <div class='title'>收益合计(元)</div>
+                    <div class='subtitle'>{php echo number_format($commission_total,2)}</div>
+                </div>
+                <div class='fui-list-angle'>
+                    <a class="btn" href="{php echo mobileUrl('creditmanagement/log')}">收益明细</a>
+                </div>
+            </div>
+        </div>
+
+
+        <div class='fui-cell-group'>
+
+
+            <div class='fui-cell'>
+                <div class='fui-cell-icon'><i class='icon icon-money'></i></div>
+                <div class='fui-cell-label' style='width:auto'>可提现收益</div>
+                <div class='fui-cell-info'></div>
+                <div class='fui-cell-remark noremark'><span
+                            class="text-danger">{php echo number_format($commission_ok,2)} 元</span>
+                </div>
+            </div>
+        </div>
+
+        <div class='fui-cell-group'>
+            <div class='fui-cell'>
+                <div class='fui-cell-icon'><i class='icon icon-clock'></i></div>
+                <div class='fui-cell-label' style='width:auto'>已申请收益</div>
+                <div class='fui-cell-info'></div>
+                <div class='fui-cell-remark noremark'>{php echo number_format($commission_apply,2)} 元</div>
+            </div>
+            <div class='fui-cell'>
+                <div class='fui-cell-icon'><i class='icon icon-rest'></i></div>
+                <div class='fui-cell-label' style='width:auto'>待打款收益</div>
+                <div class='fui-cell-info'></div>
+                <div class='fui-cell-remark noremark'>{php echo number_format($commission_check,2)} 元</div>
+            </div>
+
+            <div class='fui-cell'>
+                <div class='fui-cell-icon'><i class='icon icon-rest'></i></div>
+                <div class='fui-cell-label' style='width:auto'>无效收益</div>
+                <div class='fui-cell-info'></div>
+                <div class='fui-cell-remark noremark'>{php echo number_format($commission_fail,2)} 元</div>
+            </div>
+
+            <div class='fui-cell'>
+                <div class='fui-cell-icon'><i class='icon icon-pay'></i></div>
+                <div class='fui-cell-label' style='width:auto'>成功提现收益</div>
+                <div class='fui-cell-info'></div>
+                <div class='fui-cell-remark noremark'>{php echo number_format($commission_pay,2)} 元</div>
+            </div>
+
+
+        </div>
+
+        <div class='fui-according-group'>
+            <div class='fui-according expanded'>
+                <div class='fui-according-header'>
+                    <div class='text'>用户须知</div>
+                    <div class='remark'></div>
+                </div>
+                <div class='fui-according-content'>
+                    <div class='content-block'>
+
+                        {if $this->set['withdraw']>0}
+                            <br/>
+                            注意：可用收益满
+                            <span class='text-danger'>{php echo $this->set['withdraw']}元</span>
+                            后才能申请提现{/if}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <a {if $cansettle }href="{php echo mobileUrl('creditmanagement/apply')}"{/if}
+           class="btn btn-danger block{if !$cansettle } disabled{/if}">我要提现</a>
+
+    </div>
+</div>
+
+{template '_footer'}

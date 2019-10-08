@@ -1,0 +1,61 @@
+{template '_header'}
+<div class='fui-page fui-page-current'>
+    <div class="fui-header">
+        <div class="fui-header-left">
+            <a class="back"></a>
+        </div>
+        <div class="title">确认信息</div>
+        <div class="fui-header-right">&nbsp;</div>
+    </div>
+    <div class='fui-content navbar'>
+        <input type="hidden" id="logid" value="{$logid}"/>
+        <input type="hidden" id="mid" value="{$member['id']}"/>
+        <input type='hidden' id='money' value="{php echo number_format($price*0.1,2,'.','')}">
+        <div class="userinfo">
+            <div class="fui-list">
+                <div class="fui-list-media"><img src="{php echo tomedia($member['avatar'])}"></div>
+                <div class="fui-list-info">
+                    <div class="title">{$member['nickname']}</div>
+                    <div class="text">真实名称: {$member['realname']}</div>
+                    <div class="text">联系电话: {$member['mobile']}</div>
+                </div>
+            </div>
+        </div>
+        <div class='fui-cell-group'>
+            <div class='fui-cell'>
+                <div class='fui-cell-label'>消费金额</div>
+                <div class='fui-cell-info'>￥{php echo number_format($price,2)}元</div>
+            </div>
+            <div class='fui-cell'>
+                <div class='fui-cell-label'>全返积分</div>
+                <div class='fui-cell-info'>{php echo number_format($price*100,2)}</div>
+            </div>
+
+            <div class='fui-cell'>
+                <div class='fui-cell-label'>充值金额</div>
+                <div class='fui-cell-info'>￥{php echo number_format($price*0.1,2)}元</div>
+            </div>
+        </div>
+
+
+        <a id='btn-next' class='btn btn-success block disabled'>下一步</a>
+        {if $wechat['success'] || $payinfo['wechat']}
+            <a id='btn-wechat' class='btn btn-success block btn-pay ' style='display:none'>微信支付</a>
+        {/if}
+        {if ($alipay['success'] && !is_h5app()) || $payinfo['alipay']}
+            <a id='btn-alipay' class='btn btn-warning  block btn-pay' style='display:none'>支付宝支付</a>
+        {/if}
+        {if $credit['success']}
+            <a id='btn-credit' class='btn btn-warning  block btn-pay' style='display:none'>{$_W['shopset']['trade']['moneytext']}支付</a>
+        {/if}
+
+
+    </div>
+    <script language='javascript'>
+        require(['../addons/zm_shop/plugin/xfqf/static/recharge.js'], function (modal) {
+            modal.init({minimumcharge: {php echo $minimumcharge},wechat: {php echo intval($wechat['success'])},alipay:{php echo intval($alipay['success'])},credit:{php echo intval($credit['success'])}});
+        });
+    </script>
+</div>
+
+{template '_footer'}

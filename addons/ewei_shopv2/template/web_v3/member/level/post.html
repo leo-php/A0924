@@ -1,0 +1,412 @@
+{template '_header'}
+
+<div class="page-header">
+    当前位置：<span class="text-primary">{if !empty($level['id'])}编辑{else}添加{/if}会员等级{if !empty($level['id'])}({$level['levelname']}){/if}</span>
+</div>
+
+<div class="page-content">
+    <div class="page-sub-toolbar">
+        <span class=''>
+            {ifp 'member.level.add'}
+                <a class="btn btn-primary btn-sm" href="{php echo webUrl('member/level/add')}">添加新会员等级</a>
+            {/if}
+        </span>
+    </div>
+    <form {ife 'member.level' $level}action="" method="post"{/if} class="form-horizontal form-validate" enctype="multipart/form-data">
+        <input type="hidden" name="id" value="{$level['id']}" />
+        {if $id!='default'}
+            <div class="form-group">
+                <label class="col-lg control-label">等级</label>
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'member.level' $level}
+                    <select  name="level" class="form-control tp_is_default" style="width:90px;">
+                        {loop $level_array $key $value}
+                        <option value="{$value}" {if $level['level']==$value}selected{/if}>{$value}</option>
+                        {/loop}
+                    </select>
+
+                    <span class='help-block'>数字越大等级越高</span>
+                    {else}
+                    <div class='form-control-static'>{$level['level']}</div>
+                    {/if}
+                </div>
+            </div>
+        {/if}
+        <div class="form-group">
+            <label class="col-lg control-label must"> {if $id=='default'}默认{/if}等级名称</label>
+            <div class="col-sm-9 col-xs-12">
+                {ife 'member.level' $level}
+                <input type="text" name="levelname" class="form-control" value="{$level['levelname']}" data-rule-required="true" />
+                {else}
+                <div class='form-control-static'>{$level['levelname']}</div>
+                {/if}
+            </div>
+        </div>
+        {if $id!='default'}
+            <div class="form-group" {if $id=='default'}style="display: none;"{/if}>
+            <label class="col-lg control-label">升级条件</label>
+            <div class="col-sm-9 col-xs-12">
+                {ife 'shop.adv' $item}
+                <label class='radio-inline'>
+                    <input type='radio' name='buygoods' value='0' onclick="chose(0)" {if $level['buygoods']==0}checked{/if} /> 订单金额/数量
+                </label>
+                <!--<label class='radio-inline'>-->
+                    <!--<input type='radio' name='buygoods' value='1' onclick="chose(1)"  {if $level['buygoods']==1}checked{/if} />-->
+                    <!--{if empty($upLevel['levelname'])}-->
+                    <!--购买指定商品-->
+                    <!--{else}-->
+                    <!--购买指定商品或直推【{$upLevel['levelname']}】及以上等级人数-->
+                    <!--{/if}-->
+                <!--</label>-->
+                <label class='radio-inline'>
+                    <input type='radio' name='buygoods' value='2' onclick="chose(2)" {if $level['buygoods']==2}checked{/if} /> 进货金额
+                </label>
+                {else}
+                <div class='form-control-static'>{if empty($item['enabled'])}隐藏{else}显示{/if}</div>
+                {/if}
+            </div>
+        </div>
+            <div class="form-group" >
+                <label class="col-lg control-label"></label>
+                <div class="col-sm-9 col-xs-12" id="typeone" {if $level['buygoods']!='0'}style="display:none"{/if} >
+                    {ife 'member.level' $level}
+                        <div class='input-group fixsingle-input-group'>
+                            {if empty($set['shop']['leveltype'])}
+                                <span class='input-group-addon'>完成订单金额满</span>
+                                <input type="text" name="ordermoney" class="form-control" value="{$level['ordermoney']}" />
+                                <span class='input-group-addon'>元</span>
+                            {/if}
+                            {if $set['shop']['leveltype']==1}
+                                <span class='input-group-addon'>完成订单数量满</span>
+                                <input type="text" name="ordercount" class="form-control" value="{$level['ordercount']}" />
+                                <span class='input-group-addon'>个</span>
+                            {/if}
+                        </div>
+                        <span class='help-block'>会员升级条件，不填写默认为不自动升级, 设置<a href="{php echo webUrl('sysset/member')}">【会员升级依据】</a> </span>
+                    {else}
+                        <div class='form-control-static'>
+                            {if empty($shopset['leveltype'])}
+                            {if $level['ordermoney']>0}
+                            完成订单金额满 {$level['ordermoney']}元
+                            {else}
+                            不自动升级
+                            {/if}
+                            {/if}
+                            {if $shopset['leveltype']==1}
+                            {if $level['ordercount']>0}
+                            完成订单数量满 {$level['ordercount']}个
+                            {else}
+                            不自动升级
+                            {/if}
+                            {/if}
+                        </div>
+                    {/if}
+                </div>
+                <div class="col-sm-9 col-xs-12" id="typetwo" {if $level['buygoods']!='1'}style="display:none"{/if}>
+                    {if !empty($upLevel)}
+                    <div class='input-group fixsingle-input-group'>
+                        <span class='input-group-addon'>直推【{$upLevel['levelname']}】及以上人数</span>
+                        <input type="number" name="same_level_invite" class="form-control" value="{$level['same_level_invite']}" />
+                        <span class='input-group-addon'>人</span>
+                    </div>
+                    <br/>
+                    {/if}
+                    <div class=' fixsingle-input-group' style="width: 800px;">
+                        <div class="col-sm-9 col-xs-12">
+                            <?php echo tpl_selector('goodsids',array(
+                             'preview'=>true,
+                            'multi'=>1,
+                            'nokeywords'=>true,
+                            'autosearch'=>1,
+                            'value'=>$item['title'],
+                            'url'=>webUrl('goods/query'),
+                            'items'=>$goods,
+                            'buttontext'=>'选择商品',
+                            'placeholder'=>'请选择商品')
+                            )
+                            ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-9 col-xs-12" id="typethree" {if $level['buygoods']!='2'}style="display:none"{/if} >
+                {ife 'member.level' $level}
+                {if !empty($upLevel)}
+                <div class='input-group fixsingle-input-group'>
+                    <span class='input-group-addon'>直推【{$upLevel['levelname']}】及以上人数</span>
+                    <input type="number" name="same_level_invite" class="form-control" value="{$level['same_level_invite']}" />
+                    <span class='input-group-addon'>人</span>
+                </div>
+                <br/>
+                {/if}
+                <div class='input-group fixsingle-input-group'>
+                    <span class='input-group-addon'>线下进货金额满</span>
+                    <input type="text" name="stock_money" class="form-control" value="{$level['stock_money']}" />
+                    <span class='input-group-addon'>元</span>
+                </div>
+                <!--<span class='help-block'>会员升级条件，不填写默认为不自动升级, 设置<a href="{php echo webUrl('sysset/member')}">【会员升级依据】</a> </span>-->
+                {else}
+                <div class='form-control-static'>
+
+                </div>
+                {/if}
+                </div>
+            </div>
+        {/if}
+        <div class="form-group">
+            <label class="col-lg control-label">推荐下载加速奖励</label>
+            <div class="col-sm-9 col-xs-12">
+                {ife 'member.level' $level}
+                <div class="input-group fixsingle-input-group">
+                    <input type="number" name="invite_speed" class="form-control" value="{$level['invite_speed']}" />
+                    <div class="input-group-addon">千分比‰</div>
+                </div>
+                {else}
+                <div class='form-control-static'>
+
+                </div>
+                {/if}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg control-label">首次进货赠送双倍卫贝</label>
+            <div class="col-sm-9 col-xs-12">
+                {ife 'member.level' $level}
+                <label class='radio-inline'>
+                    <input type='radio' name='double_credit' value='0' onclick="doubleCredit(0)" {if $level['double_credit']==0}checked{/if} /> 否
+                </label>
+                <label class='radio-inline'>
+                    <input type='radio' name='double_credit' value='1' onclick="doubleCredit(1)" {if $level['double_credit']==1}checked{/if} /> 是
+                </label>
+                {else}
+
+                {/if}
+            </div>
+        </div>
+        <div class="rebuyDiv" {if $level['double_credit']==0}style="display:none"{/if}>
+            <div class="form-group">
+                <label class="col-lg control-label">再次进货赠送双倍卫贝</label>
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'member.level' $level}
+                    <label class='radio-inline'>
+                        <input type='radio' name='rebuy_double_credit' value='0' {if $level['rebuy_double_credit']==0}checked{/if} /> 否
+                    </label>
+                    <label class='radio-inline'>
+                        <input type='radio' name='rebuy_double_credit' value='1' {if $level['rebuy_double_credit']==1}checked{/if} /> 是
+                    </label>
+                    {else}
+
+                    {/if}
+                </div>
+            </div>
+
+            <!--<div class="form-group">-->
+                <!--<label class="col-lg control-label">再次进货加速奖励</label>-->
+                <!--<div class="col-sm-9 col-xs-12">-->
+                    <!--{ife 'member.level' $level}-->
+                    <!--<div class="input-group fixsingle-input-group">-->
+                        <!--<input type="number" name="rebuy_speed" class="form-control" value="{$level['rebuy_speed']}" />-->
+                        <!--<div class="input-group-addon">千分比‰</div>-->
+                    <!--</div>-->
+                    <!--{else}-->
+
+                    <!--{/if}-->
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+
+        <div class="form-group">
+            <label class="col-lg control-label">直推进货奖励</label>
+            <div class="col-sm-9 col-xs-12">
+                {ife 'member.level' $level}
+                <div class="input-group" style="width: 70%;">
+                    <div class="input-group-addon">直推加速奖励：每进货</div>
+                    <input type="number" name="invite_buy_speed_unit" class="form-control" min="0" value="{$level['invite_buy_speed_unit']}" />
+                    <div class="input-group-addon">元 | 奖励加速转换</div>
+                    <input type="number" name="invite_buy_speed" class="form-control" min="0" value="{$level['invite_buy_speed']}" />
+                    <div class="input-group-addon">‰（千分比） | 封顶</div>
+                    <input type="number" name="invite_buy_max_speed" class="form-control" min="0" value="{$level['invite_buy_max_speed']}" />
+                    <div class="input-group-addon">‰（千分比）</div>
+                </div>
+                <br/>
+                <div class="input-group" style="width: 70%;">
+                    <div class="input-group-addon">直推进货提成奖励：</div>
+                    <input type="number" name="invite_buy_point" class="form-control" min="0" value="{$level['invite_buy_point']}" />
+                    <div class="input-group-addon">进货金额提成%（百分比）</div>
+                </div>
+                <br/>
+                {else}
+                <div class='form-control-static'>
+                    推荐下载加速奖励：{$level['invite_speed']}
+                </div>
+                {/if}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-lg control-label">间推进货奖励</label>
+            <div class="col-sm-9 col-xs-12">
+                {ife 'member.level' $level}
+                <div class="input-group" style="width: 70%;">
+                    <div class="input-group-addon">间推加速奖励：每进货</div>
+                    <input type="number" name="invite_two_buy_speed_unit" class="form-control" min="0" value="{$level['invite_two_buy_speed_unit']}" />
+                    <div class="input-group-addon">元 | 奖励加速转换</div>
+                    <input type="number" name="invite_two_buy_speed" class="form-control" min="0" value="{$level['invite_two_buy_speed']}" />
+                    <div class="input-group-addon">‰（千分比） | 封顶</div>
+                    <input type="number" name="invite_two_buy_max_speed" class="form-control" min="0" value="{$level['invite_two_buy_max_speed']}" />
+                    <div class="input-group-addon">‰（千分比）</div>
+                </div>
+                <br/>
+                <div class="input-group" style="width: 70%;">
+                    <div class="input-group-addon">间推进货提成奖励：</div>
+                    <input type="number" name="invite_two_buy_point" class="form-control" min="0" value="{$level['invite_two_buy_point']}" />
+                    <div class="input-group-addon">进货金额提成%（百分比）</div>
+                </div>
+                <br/>
+                {else}
+                <div class='form-control-static'>
+                    推荐下载加速奖励：{$level['invite_speed']}
+                </div>
+                {/if}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-lg control-label">区域提成开启</label>
+            <div class="col-sm-9 col-xs-12">
+                {ife 'shop.adv' $item}
+                <label class='radio-inline'>
+                    <input type='radio' name='area_type' value='0' {if $level['area_type']==0}checked{/if} /> 无
+                </label>
+                <label class='radio-inline'>
+                    <input type='radio' name='area_type' value='1'  {if $level['area_type']==1}checked{/if} /> 区级
+                </label>
+                <label class='radio-inline'>
+                    <input type='radio' name='area_type' value='2'  {if $level['area_type']==2}checked{/if} /> 市级
+                </label>
+                <label class='radio-inline'>
+                    <input type='radio' name='area_type' value='3'  {if $level['area_type']==3}checked{/if} /> 省级
+                </label>
+                {else}
+                <div class='form-control-static'>
+                    {if empty($item['area_type'])}
+                    无
+                    {else if $item['area_type'] == 1}
+                    区级
+                    {else if $item['area_type'] == 2}
+                    市级
+                    {else if $item['area_type'] == 3}
+                    省级
+                    {/if}</div>
+                {/if}
+            </div>
+        </div>
+
+        <div class="form-group" id="areaPointDiv" style="display: none;">
+            <label class="col-lg control-label">区域奖励总提成</label>
+            <div class="col-sm-9 col-xs-12">
+                {ife 'shop.adv' $item}
+                <div class="input-group fixsingle-input-group">
+                    <input type="number" name="area_buy_point" class="form-control" min="0" max='100' value="{$level['area_buy_point']}" />
+                    <div class="input-group-addon">百分比</div>
+                </div>
+                {else}
+                <div class='form-control-static'>{$level['area_buy_point']}%</div>
+                {/if}
+            </div>
+        </div>
+
+        <div class="form-group" >
+            <label class="col-lg control-label">折扣</label>
+            <div class="col-sm-9 col-xs-12">
+                {ife 'member.level' $level}
+                    <div class="input-group fixsingle-input-group">
+                        <input type="text" name="discount" class="form-control" value="{$level['discount']}" />
+                        <div class="input-group-addon">折</div>
+                    </div>
+                    <span class='help-block'>请输入0.1~10之间的数字,值为空代表不设置折扣</span>
+                {else}
+                    <div class='form-control-static'>
+                        {if empty($level['discount'])}
+                        不打折
+                        {else}
+                        {$level['discount']}折
+                        {/if}
+                    </div>
+                {/if}
+            </div>
+        </div>
+        <div class="form-group" {if $id=='default'}style="display: none;"{/if}>
+            <label class="col-lg control-label">状态</label>
+            <div class="col-sm-9 col-xs-12">
+                {ife 'shop.adv' $item}
+                    <label class='radio-inline'>
+                        <input type='radio' name='enabled' value='1' {if $level['enabled']==1}checked{/if} /> 启用
+                    </label>
+                    <label class='radio-inline'>
+                        <input type='radio' name='enabled' value='0' {if $level['enabled']==0}checked{/if} /> 禁用
+                    </label>
+                {else}
+                    <div class='form-control-static'>{if empty($item['enabled'])}隐藏{else}显示{/if}</div>
+                {/if}
+            </div>
+        </div>
+        <div class="form-group"></div>
+        <div class="form-group">
+            <label class="col-lg control-label"></label>
+            <div class="col-sm-9 col-xs-12">
+                {ife 'member.level' $level}
+                    <input type="submit" value="提交" class="btn btn-primary"  />
+                {/if}
+                <input type="button" name="back" onclick='history.back()' {ifp 'member.level.add|member.level.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
+            </div>
+        </div>
+    </form>
+
+</div>
+<script type="text/javascript">
+   function chose(num){
+       if (num == 0){
+           $("#typeone").show();
+           $("#typethree").hide();
+       }else{
+           $("#typeone").hide();
+           $("#typethree").show();
+       }
+   }
+   function doubleCredit(num) {
+       if (num == 0){
+           $(".rebuyDiv").hide();
+       }else{
+           $(".rebuyDiv").show();
+       }
+   }
+
+    $(function () {
+        var area_type = $("input[name='area_type']:checked").val();
+        if (!area_type || area_type ==0) {
+            $("#areaPointDiv").hide();
+            $("input[name='area_buy_point']").val(0);
+        } else {
+            $("#areaPointDiv").show();
+        }
+
+        var doubleCredit = $("input[name='double_credit']:checked").val();
+        if (doubleCredit == 0){
+            $(".rebuyDiv").hide();
+        }else{
+            $(".rebuyDiv").show();
+        }
+    });
+
+   $("input[name='area_type']").click(function () {
+       var area_type = $("input[name='area_type']:checked").val();
+       if (!area_type || area_type ==0) {
+           $("#areaPointDiv").hide();
+           $("input[name='area_buy_point']").val(0);
+       } else {
+           $("#areaPointDiv").show();
+       }
+   });
+</script>
+{template '_footer'}

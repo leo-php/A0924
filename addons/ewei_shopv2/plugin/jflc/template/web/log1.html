@@ -1,0 +1,109 @@
+{template '_header'}
+
+<div class="page-heading">
+     <span class='pull-right'>
+    </span>
+    <h2>日志列表
+        <small>总数: <span class='text-danger'>{$total}</span></small>
+    </h2>
+</div>
+<form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
+    <input type="hidden" name="c" value="site"/>
+    <input type="hidden" name="a" value="entry"/>
+    <input type="hidden" name="m" value="ewei_shopv2"/>
+    <input type="hidden" name="do" value="web"/>
+    <input type="hidden" name="r" value="jflc.log1"/>
+
+    <div class="page-toolbar row m-b-sm m-t-sm">
+        <div class="col-sm-5">
+            <div class="btn-group btn-group-sm" style='float:left'>
+                <button class="btn btn-default btn-sm" type="button" data-toggle='refresh'><i class='fa fa-refresh'></i>
+                </button>
+            </div>
+            <div class='input-group input-group-sm'>
+                {php echo tpl_daterange('time', array('sm'=>true,'placeholder'=>'创建时间'),true);}
+            </div>
+        </div>
+
+        <div class="col-sm-6 pull-right">
+            <div class="input-group">
+                <input type="text" class="form-control input-sm" name="keyword" value="{$_GPC['keyword']}"
+                       placeholder="输入关键字"/>
+                <span class="input-group-btn">
+                    <button class="btn btn-sm btn-primary" type="submit"> 搜索</button>
+                    <button type="submit" name="export" value="1" class="btn btn-danger btn-sm">导出</button>
+				</span>
+            </div>
+        </div>
+    </div>
+</form>
+{if count($list)>0}
+    <table class="table table-hover table-responsive">
+        <thead class="navbar-inner">
+        <tr>
+            <th style='width:100px;'>会员</th>
+            <th style='width:80px;'>姓名<br/>手机号码</th>
+            <th style="width:100px;">积分</th>
+            <th style="width:200px;">备注</th>
+            <th style='width:70px;'>日期</th>
+        </tr>
+        </thead>
+        <tbody>
+        {loop $list $row}
+            <tr>
+                <td>
+                    <span data-toggle='tooltip' title='{$row['nickname']}'>
+                    {if !empty($row['avatar'])}
+                        <img src='{php echo tomedia($row['avatar'])}'
+                             style='width:30px;height:30px;padding1px;border:1px solid #ccc'/>
+                    {/if}
+                        {if empty($row['nickname'])}未更新{else}{$row['nickname']}{/if}
+                    </span>
+                </td>
+
+                <td>{$row['realname']} <br/> {$row['mobile']}</td>
+
+                <td>{$row['point']}</td>
+
+                <td>{$row['remark']}</td>
+                <td>{php echo date('Y-m-d',$row['createtime'])}<br/>{php echo date('H:i:s',$row['createtime'])}</td>
+            </tr>
+        {/loop}
+        </tbody>
+    </table>
+    {$pager}
+
+{else}
+    <div class='panel panel-default'>
+        <div class='panel-body' style='text-align: center;padding:30px;'>
+            暂时没有任何分销商!
+        </div>
+    </div>
+{/if}
+<script language="javascript">
+    require(['bootstrap'], function () {
+        $("[rel=pop]").popover({
+            trigger: 'manual',
+            placement: 'left',
+            title: $(this).data('title'),
+            html: 'true',
+            content: $(this).data('content'),
+            animation: false
+        }).on("mouseenter", function () {
+            var _this = this;
+            $(this).popover("show");
+            $(this).siblings(".popover").on("mouseleave", function () {
+                $(_this).popover('hide');
+            });
+        }).on("mouseleave", function () {
+            var _this = this;
+            setTimeout(function () {
+                if (!$(".popover:hover").length) {
+                    $(_this).popover("hide")
+                }
+            }, 100);
+        });
+    });
+</script>
+
+{template '_footer'}

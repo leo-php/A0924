@@ -1,0 +1,12 @@
+
+<div class="form-group">
+    <label class="col-sm-2 control-label">结算天数设置</label>
+    <div class="col-sm-9 col-xs-12">
+        {ifp 'jflc.set.edit'}
+        <input type='text' class='form-control' name='data[merchday]' value="{$data['merchday']}" />
+        {else}
+        <div class='form-control-static'>{$data['applytitle']}</div>
+        {/if}
+        <span class="help-block">当天数未设置时，以默认1天计算</span>
+    </div>
+</div>

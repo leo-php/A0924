@@ -1,0 +1,66 @@
+{template '_header'}
+{template 'commission/common'}
+<script>document.title = "转出投资账户"; </script>
+<div class='fui-page  fui-page-current member-cart-page'>
+    <div class="fui-header">
+        <div class="fui-header-left">
+            <a class="back" ></a>
+        </div>
+        <div class="title">转出投资账户</div>
+        <div class="fui-header-right">&nbsp;</div>
+    </div>
+
+    <div class='fui-content' style='margin-top:5px;'>
+        <div class="fui-cell-group">
+            <div class="fui-cell">
+                <div class="fui-cell-text">当前积分：</div>
+                <div class="fui-cell-info">{php echo intval($agent['point'])}</div>
+            </div>
+        </div>
+
+        <div class="fui-cell-group">
+            <form action="" method="post" id="sub">
+                <input type="hidden" name="token" value="{$_W['token']}"/>
+
+                <div class="fui-cell weui_cells_form">
+                    <div class="fui-cell-text ">转出积分</div>
+                    <div class="fui-cell-info">
+                        <input type="tel" class='fui-input' id='post_num' name='post_num'
+                               placeholder="请输入积分"
+                               value=""/>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+        <button type="submit" class='btn btn-success block btn-pay' style="width: 96%" id="showTooltips">确认提交</button>
+    </div>
+
+
+</div>
+
+<script>
+    $("#showTooltips").click(function () {
+
+        var post_num = $('#post_num').val();
+        var args = {post_num:post_num};
+
+        if (!post_num || !/\d+/.test(post_num)) {
+            FoxUI.toast.show('请输入转出积分');
+            return
+        }
+        $.getJSON('{php echo mobileUrl('jflc.outpoint',array(),true)}', args, function (data) {
+            var status = data.status;
+            if (status == 1) {
+                FoxUI.toast.show('积分转出成功');
+                location.href = core.getUrl('member')
+            } else {
+                FoxUI.toast.show(data.result.message);
+            }
+        });
+
+    });
+
+</script>
+{template '_footer'}

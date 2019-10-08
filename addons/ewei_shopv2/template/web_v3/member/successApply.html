@@ -1,0 +1,199 @@
+{template '_header'}
+
+<div class="page-header">
+    当前位置：<span class="text-primary">审核线下进货</span>
+</div>
+<div class="page-content">
+<form action="" method="post" class="form-horizontal form-validate" enctype="multipart/form-data" novalidate="novalidate">
+    <div class="form-group">
+        <label class="col-lg control-label">申请用户</label>
+        <div class="col-sm-9 col-xs-12">
+            <div class="input-group fixsingle-input-group">
+                <p class="form-control" >{$member['nickname']}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-lg control-label">进货金额</label>
+        <div class="col-sm-9 col-xs-12">
+            <div class="input-group fixsingle-input-group">
+                <p class="form-control">{$recordInfo['total_price']} 元</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-lg control-label">进货人</label>
+        <div class="col-sm-9 col-xs-12">
+            <div class="input-group fixsingle-input-group">
+                <p class="form-control">{$recordInfo['username']}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-lg control-label">进货人电话</label>
+        <div class="col-sm-9 col-xs-12">
+            <div class="input-group fixsingle-input-group">
+                <p class="form-control">{$recordInfo['mobile']}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-lg control-label">转账或付款流水单号</label>
+        <div class="col-sm-9 col-xs-12">
+            <div class="input-group fixsingle-input-group">
+                <p class="form-control">{$recordInfo['order_sn']}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-lg control-label">备注</label>
+        <div class="col-sm-9 col-xs-12">
+            <div class="input-group fixsingle-input-group">
+                <p class="form-control">{$recordInfo['remark']}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group" style="height: 300px;">
+        <label class="col-lg control-label">图片凭证</label>
+        <div class="col-sm-9 col-xs-12">
+            <div class="input-group fixsingle-input-group">
+                <div class="">
+                    {if !empty($recordInfo['picture'])}
+                        <img src="{$recordInfo['picture']}" style="width: 100%;max-width:400px;max-height: 300px;margin-bottom:30px;">
+                    {/if}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="result" style="display: block;margin-top: 40px;width: 100%;">
+        <div class="form-group">
+            <label class="col-lg control-label">审核结果</label>
+            <div class="col-sm-9 col-xs-12">
+                <label class="radio-inline">
+                    <input type="radio" name="apply_result" value="2"> 审核通过
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="apply_result" value="3"> 审核失败
+                </label>
+            </div>
+        </div>
+        <br/>
+        <!--<div id="successDiv" style="display:none;">-->
+            <!--<div class="form-group">-->
+                <!--<label class="col-lg control-label">修改会员等级</label>-->
+                <!--<div class="col-sm-9 col-xs-12" style="margin-top:10px;">-->
+                    <!--<div class="input-group fixsingle-input-group">-->
+                        <!--<select name="level"  class="form-control valid" aria-invalid="false">-->
+                            <!--<option value=''>{php echo empty($shop['levelname'])?'普通会员':$shop['levelname']}</option>-->
+                            <!--{loop $levelList $level}-->
+                            <!--<option value='{$level['id']}' {if $member['level']==$level['id']}selected{/if}>{$level['levelname']}</option>-->
+                            <!--{/loop}-->
+                        <!--</select>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+                <!--<label class="col-lg control-label">赠送卫贝</label>-->
+                <!--<div class="col-sm-9 col-xs-12" style="margin-top:10px;">-->
+                    <!--<div class="input-group fixsingle-input-group">-->
+                        <!--<input type="number" name="credit" class="form-control" value="0">-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+                <!--<label class="col-lg control-label">加速转换速度</label>-->
+                <!--<div class="col-sm-9 col-xs-12" style="margin-top:10px;">-->
+                    <!--<div class="input-group fixsingle-input-group">-->
+                        <!--<input type="number" name="speed" class="form-control" value="0">-->
+                        <!--<div class="input-group-addon">千分比‰</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+                <!--<label class="col-lg control-label">直推进货奖励</label>-->
+                <!--<div class="col-sm-9 col-xs-12" style="margin-top:10px;">-->
+                    <!--<div class="input-group">-->
+                        <!--<input type="number" name="inviter_speed" class="form-control" value="0">-->
+                        <!--<div class="input-group-addon">加速转换千分比‰</div>-->
+                        <!--<input type="number" name="inviter_point" class="form-control" value="0">-->
+                        <!--<div class="input-group-addon">进货提成百分比%</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="form-group">-->
+                <!--<label class="col-lg control-label">间推进货奖励</label>-->
+                <!--<div class="col-sm-9 col-xs-12" style="margin-top:10px;">-->
+                    <!--<div class="input-group">-->
+                        <!--<input type="number" name="inviter_two_speed" class="form-control" value="0">-->
+                        <!--<div class="input-group-addon">加速转换千分比‰</div>-->
+                        <!--<input type="number" name="inviter_two_point" class="form-control" value="0">-->
+                        <!--<div class="input-group-addon">进货提成百分比%</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div id="rejectDiv" style="display:none;">
+            <div class="form-group">
+                <label class="col-lg control-label">失败理由</label>
+                <div class="col-sm-9 col-xs-12" style="margin-top:10px;">
+                    <div class="input-group fixsingle-input-group">
+                        <input type="text" name="reject_reason" class="form-control" value="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br/>
+    </div>
+    <div class="form-group" >
+        <label class="col-lg control-label"></label>
+        <div class="col-sm-9 col-xs-12" style="margin-top:20px;">
+            <input value="提交" onclick="submitResult()" class="btn btn-primary"  />
+            <input type="button" name="back" onclick='history.back()' {ifp 'member.level.add|member.level.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
+        </div>
+    </div>
+</form>
+</div>
+<script type="text/javascript">
+    $("input[name='apply_result']").click(function () {
+        var apply_result = $("input[name='apply_result']:checked").val();
+        if (apply_result == 2) {
+            $("#successDiv").show();
+            $("#rejectDiv").hide();
+        } else if(apply_result== 3){
+            $("#successDiv").hide();
+            $("#rejectDiv").show();
+        }
+    });
+
+    function submitResult() {
+        var apply_result = $("input[name='apply_result']:checked").val();
+        var reject_reason = $("input[name='reject_reason']").val();
+        var level = $("select[name='level'] option:selected").val();
+        var credit = $("input[name='credit']").val();
+        var speed = $("input[name='speed']").val();
+        var inviter_speed = $("input[name='inviter_speed']").val();
+        var inviter_point = $("input[name='inviter_point']").val();
+        var inviter_two_speed = $("input[name='inviter_two_speed']").val();
+        var inviter_two_point = $("input[name='inviter_two_point']").val();
+        var id = "{$_GPC['id']}";
+        $.post("{php echo webUrl('member/linepayApply/successApplyStore')}", {apply_result:apply_result,reject_reason:reject_reason,level:level,credit:credit,speed:speed,id:id,inviter_speed:inviter_speed,inviter_point:inviter_point,inviter_two_speed:inviter_two_speed,inviter_two_point:inviter_two_point}, function (result) {
+            if (result.status == 1) {
+                tip.msgbox.suc(result.result.message);
+                setInterval(function () {
+                    location.href = "{php echo webUrl('member/linepayApply')}"
+                }, 2000);
+            } else {
+                tip.msgbox.err(result.result.message);
+            }
+        }, 'json');
+    }
+</script>
+{template '_footer'}

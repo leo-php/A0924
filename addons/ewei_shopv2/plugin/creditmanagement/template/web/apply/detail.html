@@ -1,0 +1,277 @@
+{template '_header'}
+
+<div class="page-heading"> 
+    <span class='pull-right'>
+        {if $status==1}
+        <a href="javascript:;" onclick="checkall(true)" class="btn btn-success btn-sm">批量审核通过</a>
+        <a href="javascript:;" onclick="checkall(false)" class="btn btn-danger btn-sm">批量审核不通过</a>
+        {/if}
+    </span>
+    <h2>提现申请信息
+        <small> 共计 <span style="color:red; ">{$totalcount}</span> 个数据 , 金额共计 <span style="color:red; ">{$totalmoney}</span> 元 佣金总计 <span style="color:red; ">{$totalcommission}</span> 元
+        </small>
+    </h2>
+</div>
+<div class="step-region" >
+    <ul class="ui-step ui-step-4" >
+        <li {if $apply['status']>=1}class="ui-step-done"{/if}>
+            <div class="ui-step-title" >申请中</div>
+            <div class="ui-step-number" >1</div>
+            <div class="ui-step-meta" >{if 1<=$apply['status']}{php echo date('Y-m-d',$apply['applytime'])}<br/>{php echo date('H:i:s',$apply['applytime'])}{/if}</div>
+        </li>
+        <li  {if $apply['status']>=2}class="ui-step-done"{/if}>
+            <div class="ui-step-title">商家审核</div>
+            <div class="ui-step-number">2</div>
+            <div class="ui-step-meta">{if 2<=$apply['status']}{php echo date('Y-m-d',$apply['checktime'])}<br/>{php echo date('H:i:s',$apply['checktime'])}{/if}</div>
+        </li>
+        <li {if $apply['status']>=3}class="ui-step-done"{/if}>
+            <div class="ui-step-title">商家打款</div>
+            <div class="ui-step-number" >3</div>
+            <div class="ui-step-meta" >{if 3<=$apply['status']}{php echo date('Y-m-d',$apply['paytime'])}<br/>{php echo date('H:i:s',$apply['paytime'])}{/if}</div>
+        </li>
+        <li {if $apply['status']==-1}class="ui-step-done"{/if}>
+            <div class="ui-step-title">无效</div>
+            <div class="ui-step-number" >!</div>
+            <div class="ui-step-meta" >{if -1==$apply['status']}{php echo date('Y-m-d',$apply['invalidtime'])}<br/>{php echo date('H:i:s',$apply['invalidtime'])}{/if}</div>
+        </li>
+    </ul>
+</div>
+
+<form action="" method='post' class='form-horizontal form-validate'>
+
+    <input type="hidden" name="c" value="site" />
+    <input type="hidden" name="a" value="entry" />
+    <input type="hidden" name="m" value="ewei_shopv2" />
+    <input type="hidden" name="do" value="web" />
+    <input type="hidden" name="r" value="creditmanagement.apply" />
+    <input type="hidden" name="id" value="{$apply['id']}" />
+
+    <div class="panel panel-default">
+        <div class='panel-heading'>
+            提现者信息
+        </div>
+        <div class='panel-body'>
+            <div style='height:auto;width:120px;float:left;'>
+                <img src='{$member['avatar']}' style='width:100px;height:100px;border:1px solid #ccc;padding:1px' />
+            </div>
+            <div style='float:left;height:auto;overflow: hidden;width:600px'>
+                <p><b>昵称:</b> {$member['nickname']}    <b>姓名:</b> {$member['realname']}  <b>手机号:</b> {$member['mobile']}    <b>微信号:</b> {$member['weixin']}</p>
+                <p>
+                    <b>累计佣金: </b><span style='color:red'>{$member['commission_total']}</span> 元
+                    <b>待审核佣金: </b><span style='color:red'>{$member['commission_apply']}</span> 元
+                    <b>待打款佣金: </b><span style='color:red'>{$member['commission_check']}</span> 元
+                    <b>结算期佣金: </b><span style='color:red'>{$member['commission_lock']}</span> 元
+                </p>
+                <p>
+                    <b>申请佣金: </b><span style='color:red'>{$apply['commission']}</span> 元
+                </p>
+                {if (float)$apply['sendmoney']}
+                <p>
+                    <b>已打款(红包才有): </b><span style='color:red'>{$apply['sendmoney']}</span> 元
+                </p>
+                {/if}
+                <p>
+                    <b>打款方式: </b>
+                    {if empty($apply['type'])}
+                    <span class='label label-primary'>{$apply_type[$apply['type']]}</span>
+                    {else if $apply['type'] == 1}
+                    <span class='label label-success'>{$apply_type[$apply['type']]}</span>
+                    {else if $apply['type'] == 2}
+                    <span class='label label-warning'>{$apply_type[$apply['type']]}</span>
+                    <b>姓名: </b><span style='color:red' id="realname">{$apply['realname']}</span>
+                    <b>支付宝帐号: </b><span style='color:red' id="alipay">{$apply['alipay']}</span>
+                    {else if $apply['type'] == 3}
+                    <span class='label label-danger'>{$apply_type[$apply['type']]}</span>
+                    <b>姓名: </b><span style='color:red' id="realname">{$apply['realname']}</span>
+                    <b>银行: </b><span style='color:red' id="bankname">{$apply['bankname']}</span>
+                    <b>卡号: </b><span style='color:red' id="bankcard">{$apply['bankcard']}</span>
+                    {/if}
+                </p>
+            </div>
+        </div>
+
+        <div class='panel-body'>
+            <table class="table">
+                <thead class="navbar-inner">
+                    <tr>
+                        <th style='width:50px;'>编号</th>
+                        <th style='width:100px;'>金额</th>
+                        <th style='width:200px;'>申请时间</th>
+                        <th>审核状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {loop $list $row}
+                    <tr>
+                        <td>{$row['id']}</td>
+                        <td><b>{$row['num']}</b></td>
+                        <td>{php echo date('Y-m-d H:i',$row['createtime'])}</td>
+                        <td>
+                            <div class='input-group'>
+                                <span class='input-group-addon'>
+                                    {if $row['status']== -1}
+                                            <span class='label label-default'>未通过</span>
+                                    {elseif $row['status']==1}
+                                            <label class='radio-inline' style='margin-top:-7px;'><input type='radio'  class='status' value='-1'  name="status[{$row['id']}]"/> 不通过</label>
+                                            <label class='radio-inline'  style='margin-top:-7px;'><input type='radio'  value='2'   name="status[{$row['id']}]"/> 通过</label>
+                                    {elseif $row['status']==2}
+                                            <span class='label label-success'>通过</span>
+                                    {elseif $row['status']==3}
+                                            <span class='label label-warning'>已打款</span>
+                                    {/if}
+                                </span>
+                                <span class='input-group-addon'>备注</span>
+                                <input type='text' class='form-control' name='content[{$row['id']}]' style='width:150px;' value="{$row['content']}">
+                            </div>
+                        </td>
+                    </tr>
+
+                    {/loop}
+            </table>
+        </div>
+
+        {if $apply['status']==2}
+        <div class='panel-heading'>
+            打款信息
+        </div>
+        <div class='panel-body'>
+            此次佣金总额:  <span style='color:red'>{$totalcommission}</span> 元
+            应该打款：<span style='color:red'>{$totalpay}</span> 元
+            实际佣金：<span style='color:red'>
+                {if $deductionmoney > 0}
+                {$realmoney}
+                {else}
+                {$totalpay}
+                {/if}
+            </span> 元
+            个人所得税金额：<span style='color:red'>{$deductionmoney}</span> 元
+            个人所得税：<span style='color:red'>{$charge}%</span>
+
+        </div>
+        {/if}
+
+        {if $apply['status']==3}
+        <div class='panel-heading'>
+            打款信息
+        </div>
+        <div class='panel-body'>
+            此次佣金总额:  <span style='color:red'>{$totalcommission}</span> 元
+            实际打款：<span style='color:red'>{$totalpay}</span> 元
+            实际到账：<span style='color:red'>
+                {if $deductionmoney > 0}
+                {$realmoney}
+                {else}
+                {$totalpay}
+                {/if}
+            </span> 元
+            个人所得税金额：<span style='color:red'>{$deductionmoney}</span> 元
+            个人所得税：<span style='color:red'>{$charge}%</span>
+        </div>
+        {/if}
+
+    </div>
+    <div class="form-group col-sm-12">
+        {if $apply['status']==1}
+        {ifp 'creditmanagement.apply.refuse'}
+        <input type="submit" name="submit_refuse" value="驳回申请" class="btn btn-danger" onclick='return refuse()'/>
+        {/if}
+        {ifp 'creditmanagement.apply.check'}
+        <input type="submit" name="submit_check" value="提交审核" class="btn btn-primary" onclick='return check()'/>
+        {/if}
+        {/if}
+
+        {if $apply['status']==2}
+
+        {ifp 'creditmanagement.apply.cancel'}
+        <input type="submit" name="submit_cancel" value="重新审核" class="btn btn-default"  onclick='return cancel()'/>
+        {/if}
+        {ifp 'creditmanagement.apply.pay'}
+        {if empty($apply['type'])}
+        <input type="submit" name="submit_pay" value="打款到余额账户" class="btn btn-primary"  style='margin-left:10px;' onclick='return pay_credit()'/>
+        {else if $apply['type'] == 1}
+        <input type="submit" name="submit_pay" value="打款到微信钱包" class="btn btn-primary" style='margin-left:10px;' onclick='return pay_weixin()'/>
+        {else if $apply['type'] == 2}
+        <input type="submit" name="submit_pay" value="确认打款到支付宝" class="btn btn-primary" style='margin-left:10px;' onclick='return pay_alipay()'/>
+        {else if $apply['type'] == 3}
+        <input type="submit" name="submit_pay" value="确认打款到银行卡" class="btn btn-primary" style='margin-left:10px;' onclick='return pay_bank()'/>
+
+        {/if}
+        <input type="submit" name="submit_pay" value="手动处理" class="btn btn-warning" style='margin-left:10px;' onclick='return payed()'/>
+        {/if}
+        {/if}
+        {if $apply['status']==-1}
+        {ifp 'creditmanagement.apply.cancel'}
+        <input type="submit" name="submit_cancel" value="重新审核" class="btn btn-default"  onclick='return cancel()'/>
+        {/if}
+
+        {/if}
+
+        <input type="button" class="btn btn-default" name="submit" onclick="history.go(-1)" value="返回" style='margin-left:10px;' />
+
+    </div>
+</form>
+<script language='javascript'>
+    function checkall(ischeck) {
+        var val = ischeck ? 2 : -1;
+
+        $('.status').each(function () {
+            $(this).closest('.input-group-addon').find(":radio[value='" + val + "']").get(0).checked = true;
+        });
+    }
+    function check() {
+        var pass = true;
+        $('.status').each(function () {
+            if (!$(this).get(0).checked && !$(this).parent().next().find(':radio').get(0).checked) {
+                tip.msgbox.err('请选择审核状态!');
+                $(this).closest('.input-group-addon').popover({
+                    container: $(document.body),
+                    placement: 'top',
+                    html: true,
+                    content: "<span class='text-danger'>请选择审核状态</span>"
+                }).popover('show');
+                $(this).focus();
+                pass = false;
+                return false;
+            } else {
+                $(this).closest('.input-group-addon').popover('destroy');
+            }
+        });
+        if (!pass) {
+            return false;
+        }
+        $(':input[name=r]').val('creditmanagement.apply.check');
+        return confirm('确认已核实成功并要提交?\r\n(提交后还可以撤销审核状态, 申请将恢复到申请状态)');
+    }
+    function refuse() {
+        $(':input[name=r]').val('creditmanagement.apply.refuse');
+        return confirm('确认驳回申请?\r\n( 分销商可以重新提交提现申请)');
+    }
+    function cancel() {
+       $(':input[name=r]').val('creditmanagement.apply.cancel');
+        return confirm('确认撤销审核?\r\n( 所有状态恢复到申请状态)');
+    }
+    function pay_credit() {
+        $(':input[name=r]').val('creditmanagement.apply.pay');
+        return confirm('确认打款到此用户的余额账户?');
+    }
+    function pay_weixin() {
+        $(':input[name=r]').val('creditmanagement.apply.pay');
+        return confirm('确认打款到此用户的微信钱包?');
+    }
+    function pay_alipay() {
+        $(':input[name=r]').val('creditmanagement.apply.pay');
+        return confirm('确认打款到此用户的支付宝? 姓名:' + $("#realname").html() + ' 支付宝帐号:' + $("#alipay").html());
+    }
+
+    function pay_bank() {
+        $(':input[name=r]').val('creditmanagement.apply.pay');
+        return confirm('确认打款到此用户的银行卡? ' + $("#bankname").html() + ' 姓名: 卡号:' + $("#bankcard").html());
+    }
+
+    function payed() {
+        $(':input[name=r]').val('creditmanagement.apply.payed');
+        return confirm('选择手动处理 , 系统不进行任何打款操作!\r\n请确认你已通过线下方式为用户打款!!!\r\n是否进行手动处理 ');
+    }
+</script>
+
+{template '_footer'}

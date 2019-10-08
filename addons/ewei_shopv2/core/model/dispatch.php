@@ -90,10 +90,10 @@ class Dispatch_EweiShopV2Model
 					}
                     //增加普通会员包邮，代理不包邮
                     $agent_level=pdo_fetch(' select level from '.tablename('ewei_shop_member'). ' where uniacid=:uniacid and openid=:openid',array(':uniacid'=>$_W['uniacid'],':openid'=>$address['openid']));
-					$level=pdo_fetch(' select id from '.tablename('ewei_shop_member_level').' where enabled=1 order by level asc limit 1');
+					//$level=pdo_fetch(' select id from '.tablename('ewei_shop_member_level').' where enabled=1 order by level asc limit 1');
                     //是否开启包邮
                     if( $d['free_shipping']==1){
-                        if($agent_level['level']!=0 && $agent_level['level'] != $level['id']) {
+                        if($agent_level['level']!=0 && $agent_level['level']!=1) {
                             return $this->getDispatchPrice($param, $area, $d["calculatetype"]);
                         }
                         if(0<$d['good_ednum']){

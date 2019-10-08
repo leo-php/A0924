@@ -749,6 +749,7 @@ class Pay_EweiShopV2Page extends MobileLoginPage
                 }
                 m("order")->peerStatus(array("pid" => $ispeerpay["id"], "uid" => $member["id"], "uname" => $member["nickname"], "usay" => "", "price" => $log["fee"], "createtime" => time(), "headimg" => $peerheadimg["avatar"], "openid" => $peerheadimg["openid"], "usay" => trim($_GPC["peerpaymessage"])));
             }
+            //支付成功回调
             $pay_result = m("order")->payResult($ret);
             $open_redis = function_exists("redis") && !is_error(redis());
             if ($open_redis) {

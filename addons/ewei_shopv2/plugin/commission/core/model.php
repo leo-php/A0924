@@ -1386,8 +1386,9 @@ if (!class_exists('CommissionModel')) {
             if ($first <= 1) {
                 pdo_update('ewei_shop_member', array('isagent' => 1, 'status' => 1, 'agenttime' => time(), 'agentblack' => 0), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
                 //成为分销商同步商城店长
-                if($member['level']==0){
-                    $level_id=pdo_fetch(' select id, from '.tablename('ewei_shop_member_level').' where level !=0 and  enabled=1 order by `level` asc LIMIT 1');
+                $level=pdo_fetch(' select level from ' .tablename('ewei_shop_member_level'). ' where uniacid=:uniacid and  id=:id ',array(':uniacid'=>$_W['uniacid'],':id'=>$member['level']));
+                if($member['level']==0 || $level['level']==0){
+                    $level_id=pdo_fetch(' select id from '.tablename('ewei_shop_member_level').' where uniacid='.$_W['uniacid'].' and level!=0 and  enabled=1 order by `level` asc LIMIT 1');
                     pdo_update('ewei_shop_member',array('level'=>$level_id['id']),array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
                 }
                 return NULL;
@@ -1515,8 +1516,9 @@ if (!class_exists('CommissionModel')) {
             if ($to_check_agent) {
                 pdo_update('ewei_shop_member', array('isagent' => 1, 'status' => $become_check, 'agenttime' => $become_check == 1 ? $time : 0, 'applyagenttime' => 0), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
                 //成为分销商同步商城店长
-                if($member['level']==0){
-                    $level_id=pdo_fetch(' select id, from '.tablename('ewei_shop_member_level').' where level!=0 and  enabled=1 order by `level` asc LIMIT 1');
+                $level=pdo_fetch(' select level from ' .tablename('ewei_shop_member_level'). ' where uniacid=:uniacid and  id=:id ',array(':uniacid'=>$_W['uniacid'],':id'=>$member['level']));
+                if($member['level']==0 || $level['level']==0){
+                    $level_id=pdo_fetch(' select id from '.tablename('ewei_shop_member_level').' where uniacid='.$_W['uniacid'].' and level!=0 and  enabled=1 order by `level` asc LIMIT 1');
                     pdo_update('ewei_shop_member',array('level'=>$level_id['id']),array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
                 }
                 if ($become_check == 1) {
@@ -1844,8 +1846,9 @@ if (!class_exists('CommissionModel')) {
                             if (empty($member['agentblack'])) {
                                 pdo_update('ewei_shop_member', array('status' => $become_check, 'isagent' => 1, 'agenttime' => $become_check == 1 ? $time : 0, 'applyagenttime' => 0), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
                                 //成为分销商同步商城店长
-                                if($member['level']==0){
-                                    $level_id=pdo_fetch(' select id, from '.tablename('ewei_shop_member_level').' where level!=0 and  enabled=1 order by `level` asc LIMIT 1');
+                                $level=pdo_fetch(' select level from ' .tablename('ewei_shop_member_level'). ' where uniacid=:uniacid and  id=:id ',array(':uniacid'=>$_W['uniacid'],':id'=>$member['level']));
+                                if($member['level']==0 || $level['level']==0){
+                                    $level_id=pdo_fetch(' select id from '.tablename('ewei_shop_member_level').' where uniacid='.$_W['uniacid'].' and level!=0 and  enabled=1 order by `level` asc LIMIT 1');
                                     pdo_update('ewei_shop_member',array('level'=>$level_id['id']),array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
                                 }
                                 if ($become_check == 1) {
@@ -1899,8 +1902,9 @@ if (!class_exists('CommissionModel')) {
                                 if (empty($member['agentblack'])) {
                                     pdo_update('ewei_shop_member', array('status' => $become_check, 'isagent' => 1, 'agenttime' => $time), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
                                     //成为分销商同步商城店长
-                                    if($member['level']==0){
-                                        $level_id=pdo_fetch(' select id, from '.tablename('ewei_shop_member_level').' where level!=0 and  enabled=1 order by `level` asc LIMIT 1');
+                                    $level=pdo_fetch(' select level from ' .tablename('ewei_shop_member_level'). ' where uniacid=:uniacid and  id=:id ',array(':uniacid'=>$_W['uniacid'],':id'=>$member['level']));
+                                    if($member['level']==0 || $level['level']==0){
+                                        $level_id=pdo_fetch(' select id from '.tablename('ewei_shop_member_level').' where uniacid='.$_W['uniacid'].' and level!=0 and  enabled=1 order by `level` asc LIMIT 1');
                                         pdo_update('ewei_shop_member',array('level'=>$level_id['id']),array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
                                     }
                                     if ($become_check == 1) {
@@ -2087,8 +2091,9 @@ if (!class_exists('CommissionModel')) {
                         if (empty($member['agentblack'])) {
                             pdo_update('ewei_shop_member', array('status' => $become_check, 'isagent' => 1, 'agenttime' => $become_check == 1 ? $time : 0), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
                             //成为分销商同步商城店长
-                            if($member['level']==0){
-                                $level_id=pdo_fetch(' select id, from '.tablename('ewei_shop_member_level').' where level!=0 and  enabled=1 order by `level` asc LIMIT 1');
+                            $level=pdo_fetch(' select level from ' .tablename('ewei_shop_member_level'). ' where uniacid=:uniacid and  id=:id ',array(':uniacid'=>$_W['uniacid'],':id'=>$member['level']));
+                            if($member['level']==0 || $level['level']==0){
+                                $level_id=pdo_fetch(' select id from '.tablename('ewei_shop_member_level').' where uniacid='.$_W['uniacid'].' and level!=0 and  enabled=1 order by `level` asc LIMIT 1');
                                 pdo_update('ewei_shop_member',array('level'=>$level_id['id']),array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
                             }
                             if ($become_check == 1) {
@@ -2130,8 +2135,9 @@ if (!class_exists('CommissionModel')) {
                             if (empty($member['agentblack'])) {
                                 pdo_update('ewei_shop_member', array('status' => $become_check, 'isagent' => 1, 'agenttime' => $time), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
                                 //成为分销商同步商城店长
-                                if($member['level']==0){
-                                    $level_id=pdo_fetch(' select id, from '.tablename('ewei_shop_member_level').' where level!=0 and  enabled=1 order by `level` asc LIMIT 1');
+                                $level=pdo_fetch(' select level from ' .tablename('ewei_shop_member_level'). ' where uniacid=:uniacid and  id=:id ',array(':uniacid'=>$_W['uniacid'],':id'=>$member['level']));
+                                if($member['level']==0 || $level['level']==0){
+                                    $level_id=pdo_fetch(' select id from '.tablename('ewei_shop_member_level').' where uniacid='.$_W['uniacid'].' and level!=0 and  enabled=1 order by `level` asc LIMIT 1');
                                     pdo_update('ewei_shop_member',array('level'=>$level_id['id']),array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
                                 }
                                 if ($become_check == 1) {

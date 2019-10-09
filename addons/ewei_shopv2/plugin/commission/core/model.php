@@ -1504,8 +1504,9 @@ if (!class_exists('CommissionModel')) {
             } else {
                 if ($set['become'] == 4) {
                     $time = empty($member['applyagenttime']) ? time() : $member['applyagenttime'];
-                    $goods = pdo_fetch('select id,title,thumb,marketprice from' . tablename('ewei_shop_goods') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $set['become_goodsid'], ':uniacid' => $_W['uniacid']));
-                    $goodscount = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_order_goods') . ' og ' . '  left join ' . tablename('ewei_shop_order') . ' o on o.id = og.orderid' . (' where og.goodsid=:goodsid and o.openid=:openid and o.status>=' . $order_status . ' and og.createtime >= ' . $time . ' limit 1'), array(':goodsid' => $set['become_goodsid'], ':openid' => $openid));
+                    $become_goodsid = iunserializer($set['become_goodsid']);
+                    $goods = pdo_fetch(' select id,title,thumb,marketprice from ' . tablename('ewei_shop_goods') . ' where id in ('. implode(',', $become_goodsid) .')  and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
+                    $goodscount = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_order_goods') . ' og ' . '  left join ' . tablename('ewei_shop_order') . ' o on o.id = og.orderid' . (' where og.goodsid in ('. implode(',',$become_goodsid) .') and o.openid=:openid and o.status>=' . $order_status . ' and og.createtime >= ' . $time ), array( ':openid' => $openid));
 
                     if (0 < $goodscount) {
                         $to_check_agent = true;
@@ -1840,9 +1841,8 @@ if (!class_exists('CommissionModel')) {
             if (!$isagent) {
                 if (intval($set['become']) == 4 && !empty($set['become_goodsid'])) {
                     if (empty($set['become_order'])) {
-                        $order_goods = pdo_fetchall('select goodsid from ' . tablename('ewei_shop_order_goods') . ' where orderid=:orderid and uniacid=:uniacid  ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']), 'goodsid');
-
-                        if (in_array($set['become_goodsid'], array_keys($order_goods))) {
+                        $order_goods = pdo_fetch('select goodsid from ' . tablename('ewei_shop_order_goods') . ' where orderid=:orderid and uniacid=:uniacid  ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']));
+                        if (in_array($order_goods['goodsid'],iunserializer($set['become_goodsid']))) {
                             if (empty($member['agentblack'])) {
                                 pdo_update('ewei_shop_member', array('status' => $become_check, 'isagent' => 1, 'agenttime' => $become_check == 1 ? $time : 0, 'applyagenttime' => 0), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
                                 //成为分销商同步商城店长
@@ -1999,9 +1999,9 @@ if (!class_exists('CommissionModel')) {
                 $become_check = intval($set['become_check']);
                 if (intval($set['become']) == 4 && !empty($set['become_goodsid'])) {
                     if (empty($set['become_order'])) {
-                        $order_goods = pdo_fetchall('select goodsid from ' . tablename('ewei_shop_order_goods') . ' where orderid=:orderid and uniacid=:uniacid  ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']), 'goodsid');
+                        $order_goods = pdo_fetch('select goodsid from ' . tablename('ewei_shop_order_goods') . ' where orderid=:orderid and uniacid=:uniacid  ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']));
 
-                        if (in_array($set['become_goodsid'], array_keys($order_goods))) {
+                        if (in_array($order_goods['goodsid'],iunserializer($set['become_goodsid']))) {
                             if (empty($member['partnerblack'])) {
                                 pdo_update('ewei_shop_member', array('partnerstatus' => $become_check, 'ispartner' => 1, 'partnertime' => $become_check == 1 ? $time : 0), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
 
@@ -2085,9 +2085,9 @@ if (!class_exists('CommissionModel')) {
 
             if (!$isagent && $set['become_order'] == '1') {
                 if ($set['become'] == '4' && !empty($set['become_goodsid'])) {
-                    $order_goods = pdo_fetchall('select goodsid from ' . tablename('ewei_shop_order_goods') . ' where orderid=:orderid and uniacid=:uniacid  ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']), 'goodsid');
+                    $order_goods = pdo_fetch('select goodsid from ' . tablename('ewei_shop_order_goods') . ' where orderid=:orderid and uniacid=:uniacid  ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']));
 
-                    if (in_array($set['become_goodsid'], array_keys($order_goods))) {
+                    if (in_array($order_goods['goodsid'],iunserializer($set['become_goodsid']))) {
                         if (empty($member['agentblack'])) {
                             pdo_update('ewei_shop_member', array('status' => $become_check, 'isagent' => 1, 'agenttime' => $become_check == 1 ? $time : 0), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
                             //成为分销商同步商城店长
@@ -2257,9 +2257,9 @@ if (!class_exists('CommissionModel')) {
 
                 if ($set['become_order'] == '1') {
                     if ($set['become'] == '4' && !empty($set['become_goodsid'])) {
-                        $order_goods = pdo_fetchall('select goodsid from ' . tablename('ewei_shop_order_goods') . ' where orderid=:orderid and uniacid=:uniacid  ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']), 'goodsid');
+                        $order_goods = pdo_fetch('select goodsid from ' . tablename('ewei_shop_order_goods') . ' where orderid=:orderid and uniacid=:uniacid  ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']));
 
-                        if (in_array($set['become_goodsid'], array_keys($order_goods))) {
+                        if (in_array($order_goods['goodsid'],iunserializer($set['become_goodsid']))) {
                             if (empty($member['partnerblack'])) {
                                 pdo_update('ewei_shop_member', array('partnerstatus' => $become_check, 'ispartner' => 1, 'partnertime' => $become_check == 1 ? $time : 0), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
 

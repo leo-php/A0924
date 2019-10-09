@@ -240,9 +240,11 @@ class Register_EweiShopV2Page extends CommissionMobileLoginPage
 					if( $set["become"] == 4 ) 
 					{
 						$time = (empty($member["applyagenttime"]) ? time() : $member["applyagenttime"]);
-						$goods = pdo_fetch("select id,title,thumb,marketprice from" . tablename("ewei_shop_goods") . " where id=:id and uniacid=:uniacid limit 1", array( ":id" => $set["become_goodsid"], ":uniacid" => $_W["uniacid"] ));
-						$goodscount = pdo_fetchcolumn("select count(*) from " . tablename("ewei_shop_order_goods") . " og " . "  left join " . tablename("ewei_shop_order") . " o on o.id = og.orderid" . " where og.goodsid=:goodsid and o.openid=:openid and o.status>=" . $order_status . "  and og.createtime >= " . $time . "  limit 1", array( ":goodsid" => $set["become_goodsid"], ":openid" => $openid ));
-						if( $goodscount <= 0 ) 
+
+                        $become_goodsid = iunserializer($set['become_goodsid']);
+						$goods = pdo_fetchall(" select id,title,thumb,marketprice from " . tablename("ewei_shop_goods") . " where id in (". implode(',', $become_goodsid) .")  and uniacid=:uniacid ", array( ":uniacid" => $_W["uniacid"] ));
+						$goodscount = pdo_fetchcolumn("select count(*) from " . tablename("ewei_shop_order_goods") . " og " . "  left join " . tablename("ewei_shop_order") . " o on o.id = og.orderid" . " where og.goodsid in (". implode(',',$become_goodsid) .")  and o.openid=:openid and o.status>=" . $order_status . "  and og.createtime >= " . $time . "  limit 1", array( ":openid" => $openid ));
+						if( $goodscount <= 0 )
 						{
 							$status = 0;
 							$buy_goods = $goods;

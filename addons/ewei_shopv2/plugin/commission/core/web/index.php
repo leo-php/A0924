@@ -163,10 +163,18 @@ class Index_EweiShopV2Page extends PluginWebPage {
             $data['register_bottom_content'] = m('common')->html_images($data['register_bottom_content']);
             $data['applycontent'] = m('common')->html_images($data['applycontent']);
             $data['regbg'] = save_media($data['regbg']);
-            $data['become_goodsid'] = intval($_GPC['become_goodsid']);
+            $data['become_goodsid'] = $_GPC['become_goodsid'];
             $data['texts'] = is_array($_GPC['texts']) ? $_GPC['texts'] : array();
             if($data['become'] ==4 && empty($data['become_goodsid'])){
                 show_json(0,'请选择商品');
+            }
+
+            if(!empty($data['become_goodsid'])){
+                $cont = count($_GPC['become_goodsid']);
+                if($cont>6){
+                    show_json(0,'商品最多添加六个');
+                }
+                $data['become_goodsid'] = iserializer($data['become_goodsid']);
             }
 
              m('common')->updatePluginset(array('commission'=>$data));
@@ -208,8 +216,9 @@ class Index_EweiShopV2Page extends PluginWebPage {
 
         $data = m('common')->getPluginset('commission');
         $goods = false;
+        $become_goodsid = iunserializer($data['become_goodsid']);
         if (!empty($data['become_goodsid'])) {
-            $goods = pdo_fetch('select id,title,thumb from ' . tablename('ewei_shop_goods') . ' where id=:id and uniacid=:uniacid limit 1 ', array(':id' => $data['become_goodsid'], ':uniacid' => $_W['uniacid']));
+            $goods = pdo_fetchall("SELECT id,uniacid,title,thumb FROM ".tablename('ewei_shop_goods')." WHERE uniacid=:uniacid AND id IN (".implode(',',$become_goodsid).")",array(':uniacid'=>$_W['uniacid']));
         }
 
         include $this->template();
@@ -264,12 +273,18 @@ class Index_EweiShopV2Page extends PluginWebPage {
     }
     public function test(){
         global $_W;
+        //成为店长
         $member=pdo_fetchall(' select id,agentid,inviter,isagent,status from '.tablename('ewei_shop_member').' where uniacid='.$_W['uniacid'] .' and isagent=0 ');
         //dddd($member);
         foreach($member as $value){
             pdo_update('ewei_shop_member', array('isagent' => 1, 'status' => 1, 'agenttime' => time(), 'agentblack' => 0), array('uniacid' => $_W['uniacid'], 'id' => $value['id']));
         }
-
+        //转移邀请人id至分销商上级ID
+        $member2=pdo_fetchall(' select id,agentid,inviter,isagent,status from '.tablename('ewei_shop_member').' where uniacid='.$_W['uniacid'] .' and inviter!=0 ');
+        //dddd($member2);
+        foreach($member2 as $value){
+            pdo_update('ewei_shop_member', array('agentid' => $value['inviter']), array('uniacid' => $_W['uniacid'], 'id' => $value['id']));
+        }
     }
 
 }

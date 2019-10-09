@@ -47,15 +47,18 @@
         {if $set['become']==4 && $status==0 && $member['isagent']==0}
         <div class='fui-list-group'>
             <div class='fui-list-group-title'><i class="icon icon-lights"></i> 友情提醒</div>
-            <a href="{php echo mobileUrl('goods/detail',array('id'=>$buy_goods['id']))}">
+            {loop $buy_goods $key $value}
+            <a href="{php echo mobileUrl('goods/detail',array('id'=>$value['id']))}">
                 <div class='fui-list'>
-                    <div class='fui-list-media'><img src="{php echo tomedia($buy_goods['thumb'])}" class='round' /></div>
+                    <div class='fui-list-media'><img src="{php echo tomedia($value['thumb'])}" class='round' /></div>
                     <div class='fui-list-inner'>
-                        <div class='text'>{$buy_goods['title']}</div>
-                        <div class='text'>{$buy_goods['marketprice']}</div>
+                        <div class='text'>{$value['title']}</div>
+                        <div class='text'>{$value['marketprice']}</div>
                     </div>
                 </div>
             </a>
+            <a class="btn btn-danger " style=" height: 20px;text-align: center;font-size: 12px;line-height:20px" href="{php echo mobileUrl('goods/detail',array('id'=>$value['id']))}">购买</a>
+            {/loop}
             <div class='fui-list'>
 
                 <div class='fui-list-inner'>
@@ -64,7 +67,7 @@
                 </div>
             </div>
         </div>
-        <a class="btn btn-danger block" href="{php echo mobileUrl('goods/detail',array('id'=>$buy_goods['id']))}">现在就去购买</a>
+
         {/if}
 
         {if $member['status']==1 && $member['isagent']==1}

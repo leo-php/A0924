@@ -404,7 +404,7 @@ class Op_EweiShopV2Page extends WebPage {
                 m('notice')->sendMemberUpgradeMessage($memberInfo['openid'], $memberNowLevel, $v);
 
                 //判断直推人数是否满足升级
-                $myInviter = pdo_fetch("select id,level,inviter from " . tablename("ewei_shop_member") . " where id=:id", array(":id" => $memberInfo['inviter']));
+                $myInviter = pdo_fetch("select id,level,agentid from " . tablename("ewei_shop_member") . " where id=:id", array(":id" => $memberInfo['agentid']));
                 $nowInviterLevel = pdo_getcolumn("ewei_shop_member_level", array("id" => $myInviter['level']), 'level');
                 $nowInviterLevel = $nowInviterLevel ?: 0;
                 $newInviterLevelList = pdo_fetchall("select * from " . tablename("ewei_shop_member_level") . " 
@@ -413,7 +413,7 @@ class Op_EweiShopV2Page extends WebPage {
                 foreach ($newInviterLevelList as $key => $val) {
                     if (!empty($val['same_level_invite'])) {
                         //查询上级的同级以上人数
-                        $myChildren = pdo_fetchall("select id,level,inviter from " . tablename("ewei_shop_member") . " where inviter=:id and inviter!=0", array(":id" => $myInviter['id']));
+                        $myChildren = pdo_fetchall("select id,level,agentid from " . tablename("ewei_shop_member") . " where agentid=:id and agentid!=0", array(":id" => $myInviter['id']));
                         foreach ($myChildren as $i => $j) {
                             $levelLevel = pdo_getcolumn("ewei_shop_member_level", array("id" => $j['level']), 'level');
                             if (($val['level'] - 1) <= $levelLevel) {
@@ -424,7 +424,7 @@ class Op_EweiShopV2Page extends WebPage {
                             //升级直推
                             pdo_update("ewei_shop_member", array('level' => $val['id']), array('id' => $myInviter['id']));
                             //判断间推人数是否满足升级
-                            $myTwoInviter = pdo_fetch("select id,level,inviter from " . tablename("ewei_shop_member") . " where id=:id", array(":id" => $myInviter['inviter']));
+                            $myTwoInviter = pdo_fetch("select id,level,agentid from " . tablename("ewei_shop_member") . " where id=:id", array(":id" => $myInviter['agentid']));
                             $nowTwoInviterLevel = pdo_getcolumn("ewei_shop_member_level", array("id" => $myTwoInviter['level']), 'level');
                             $nowTwoInviterLevel = $nowTwoInviterLevel ?: 0;
                             $newTwoInviterLevelList = pdo_fetchall("select * from " . tablename("ewei_shop_member_level") . " 
@@ -433,7 +433,7 @@ class Op_EweiShopV2Page extends WebPage {
                             foreach ($newTwoInviterLevelList as $ke => $vo) {
                                 if (!empty($vo['same_level_invite'])) {
                                     //查询上级的同级以上人数
-                                    $myTwoChildren = pdo_fetchall("select id,level,inviter from " . tablename("ewei_shop_member") . " where inviter=:id and inviter!=0", array(":id" => $myTwoInviter['id']));
+                                    $myTwoChildren = pdo_fetchall("select id,level,agentid from " . tablename("ewei_shop_member") . " where agentid=:id and agentid!=0", array(":id" => $myTwoInviter['id']));
                                     foreach ($myTwoChildren as $i => $j) {
                                         $levelLevel = pdo_getcolumn("ewei_shop_member_level", array("id" => $j['level']), 'level');
                                         if (($vo['level'] - 1) <= $levelLevel) {
@@ -455,6 +455,14 @@ class Op_EweiShopV2Page extends WebPage {
             }
         }
 
+        //成为店长的产品不进行任何提成返利
+        $order_goods=pdo_fetchall(' select goodsid,price from '.tablename('ewei_shop_order_goods'). ' where orderid='.$order['id'].' and uniacid='.$_W['uniacid']);
+        $set=p('globonus')->getSet();
+        foreach ( $order_goods as $value){
+            if (in_array($value['goodsid'],iunserializer($set['become_goodsid']))) {
+                $order['price']=$order['price']-$value['price'];
+            }
+        }
         //发放卫贝及提成奖励
         $orderAddress = unserialize($order['address']);
         $isFirstStock = pdo_fetch("select count(*) as count from " . tablename("ewei_shop_linepay_record") . " where user_id={$memberInfo['id']} and status=2");
@@ -476,9 +484,9 @@ class Op_EweiShopV2Page extends WebPage {
 //                }
         }
         //直推和间推奖励 (进货商品)
-        if (!empty($memberInfo['inviter'])) {
+        if (!empty($memberInfo['agentid'])) {
             //直推
-            $inviterInfo = pdo_fetch("select * from " . tablename('ewei_shop_member') . ' where id=:id', array(':id' => $memberInfo['inviter']));
+            $inviterInfo = pdo_fetch("select * from " . tablename('ewei_shop_member') . ' where id=:id', array(':id' => $memberInfo['agentid']));
             $inviterLevelLevel = pdo_fetch("select * from " . tablename('ewei_shop_member_level') . " where id=:id", array(":id" => $inviterInfo['level']));
             //加速奖励
             if (!empty($inviterLevelLevel['invite_buy_speed'] && $inviterLevelLevel['invite_buy_speed_unit'] > 0)) {
@@ -502,8 +510,8 @@ class Op_EweiShopV2Page extends WebPage {
                 }
             }
             //间推
-            if (!empty($inviterInfo['inviter'])) {
-                $inviterTwoInfo = pdo_fetch("select * from " . tablename('ewei_shop_member') . ' where id=:id', array(':id' => $inviterInfo['inviter']));
+            if (!empty($inviterInfo['agentid'])) {
+                $inviterTwoInfo = pdo_fetch("select * from " . tablename('ewei_shop_member') . ' where id=:id', array(':id' => $inviterInfo['agentid']));
                 $inviterTwoLevelLevel = pdo_fetch("select * from " . tablename('ewei_shop_member_level') . " where id=:id", array(":id" => $inviterTwoInfo['level']));
                 if (!empty($inviterTwoLevelLevel['invite_two_buy_speed'] && $inviterLevelLevel['invite_two_buy_speed_unit'] > 0)) {
                     $totalPrice = $order['price'];

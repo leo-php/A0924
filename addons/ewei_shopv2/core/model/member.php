@@ -661,7 +661,7 @@ class Member_EweiShopV2Model {
             m('notice')->sendMemberUpgradeMessage($openid, $oldlevel, $level);
 
             //判断直推人数是否满足升级
-            $myInviter = pdo_fetch("select id,level,inviter from " . tablename("ewei_shop_member") . " where openid=:id", array(":id" => $openid));
+            $myInviter = pdo_fetch("select id,level,agentid from " . tablename("ewei_shop_member") . " where openid=:id", array(":id" => $openid));
             $nowInviterLevel = pdo_getcolumn("ewei_shop_member_level", array("id" => $myInviter['level']), 'level');
             $nowInviterLevel = $nowInviterLevel ?: 0;
             $newInviterLevelList = pdo_fetchall("select * from " . tablename("ewei_shop_member_level") . " 
@@ -670,7 +670,7 @@ class Member_EweiShopV2Model {
             foreach ($newInviterLevelList as $key => $val) {
                 if (!empty($val['same_level_invite'])) {
                     //查询上级的同级以上人数
-                    $myChildren = pdo_fetchall("select id,level,inviter from " . tablename("ewei_shop_member") . " where inviter=:id and inviter!=0", array(":id" => $myInviter['id']));
+                    $myChildren = pdo_fetchall("select id,level,agentid from " . tablename("ewei_shop_member") . " where agentid=:id and agentid!=0", array(":id" => $myInviter['id']));
                     foreach ($myChildren as $i => $j) {
                         $levelLevel = pdo_getcolumn("ewei_shop_member_level", array("id" => $j['level']), 'level');
                         if (($val['level'] - 1) <= $levelLevel) {
@@ -681,7 +681,7 @@ class Member_EweiShopV2Model {
                         //升级直推
                         pdo_update("ewei_shop_member", array('level' => $val['id']), array('id' => $myInviter['id']));
                         //判断间推人数是否满足升级
-                        $myTwoInviter = pdo_fetch("select id,level,inviter from " . tablename("ewei_shop_member") . " where id=:id", array(":id" => $myInviter['inviter']));
+                        $myTwoInviter = pdo_fetch("select id,level,agentid from " . tablename("ewei_shop_member") . " where id=:id", array(":id" => $myInviter['agentid']));
                         $nowTwoInviterLevel = pdo_getcolumn("ewei_shop_member_level", array("id" => $myTwoInviter['level']), 'level');
                         $nowTwoInviterLevel = $nowTwoInviterLevel ?: 0;
                         $newTwoInviterLevelList = pdo_fetchall("select * from " . tablename("ewei_shop_member_level") . " 
@@ -690,7 +690,7 @@ class Member_EweiShopV2Model {
                         foreach ($newTwoInviterLevelList as $ke => $vo) {
                             if (!empty($vo['same_level_invite'])) {
                                 //查询上级的同级以上人数
-                                $myTwoChildren = pdo_fetchall("select id,level,inviter from " . tablename("ewei_shop_member") . " where inviter=:id and inviter!=0", array(":id" => $myTwoInviter['id']));
+                                $myTwoChildren = pdo_fetchall("select id,level,agentid from " . tablename("ewei_shop_member") . " where agentid=:id and agentid!=0", array(":id" => $myTwoInviter['id']));
                                 foreach ($myTwoChildren as $i => $j) {
                                     $levelLevel = pdo_getcolumn("ewei_shop_member_level", array("id" => $j['level']), 'level');
                                     if (($vo['level'] - 1) <= $levelLevel) {

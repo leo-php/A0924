@@ -457,7 +457,7 @@ class Op_EweiShopV2Page extends WebPage {
 
         //成为店长的产品不进行任何提成返利
         $order_goods=pdo_fetchall(' select goodsid,price from '.tablename('ewei_shop_order_goods'). ' where orderid='.$order['id'].' and uniacid='.$_W['uniacid']);
-        $set=p('globonus')->getSet();
+        $set=p('commission')->getSet();
         foreach ( $order_goods as $value){
             if (in_array($value['goodsid'],iunserializer($set['become_goodsid']))) {
                 $order['price']=$order['price']-$value['price'];

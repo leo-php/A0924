@@ -109,7 +109,7 @@ class Op_EweiShopV2Page extends MobileLoginPage
 
 		pdo_update('ewei_shop_order', array('status' => 3, 'finishtime' => time(), 'refundstate' => 0), array('id' => $order['id'], 'uniacid' => $_W['uniacid']));
 
-        if($order['paytype'] != 1) {
+        if($order['paytype'] != 99) {// 限制余额支付，！=1
             //判断是否升级
             $memberInfo = pdo_fetch("select * from " . tablename("ewei_shop_member") . " where openid=:openid", array('openid' => $order['openid']));
             $memberNowLevel = pdo_fetch("select * from " . tablename("ewei_shop_member_level") . " where id=:id", array(':id' => $memberInfo['level']));
@@ -180,7 +180,7 @@ class Op_EweiShopV2Page extends MobileLoginPage
 
             //成为店长的产品不进行任何提成返利
             $order_goods=pdo_fetchall(' select goodsid,price from '.tablename('ewei_shop_order_goods'). ' where orderid='.$order['id'].' and uniacid='.$_W['uniacid']);
-            $set=p('globonus')->getSet();
+            $set=p('commission')->getSet();
             foreach ( $order_goods as $value){
                 if (in_array($value['goodsid'],iunserializer($set['become_goodsid']))) {
                     $order['price']=$order['price']-$value['price'];

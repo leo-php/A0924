@@ -48,16 +48,30 @@
         <div class='fui-list-group'>
             <div class='fui-list-group-title'><i class="icon icon-lights"></i> 友情提醒</div>
             {loop $buy_goods $key $value}
-            <a href="{php echo mobileUrl('goods/detail',array('id'=>$value['id']))}">
-                <div class='fui-list'>
-                    <div class='fui-list-media'><img src="{php echo tomedia($value['thumb'])}" class='round' /></div>
-                    <div class='fui-list-inner'>
-                        <div class='text'>{$value['title']}</div>
-                        <div class='text'>{$value['marketprice']}</div>
+<!--            <a href="{php echo mobileUrl('goods/detail',array('id'=>$value['id']))}">-->
+<!--                <div class='fui-list'>-->
+<!--                    <div class='fui-list-media'><img src="{php echo tomedia($value['thumb'])}" class='round' /></div>-->
+<!--                    <div class='fui-list-inner'>-->
+<!--                        <div class='text'>{$value['title']}</div>-->
+<!--                        <div class='text'>{$value['marketprice']}</div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </a>-->
+<!--            <a class="btn btn-danger " style=" height: 20px;text-align: center;font-size: 12px;line-height:20px" href="{php echo mobileUrl('goods/detail',array('id'=>$value['id']))}">购买</a>-->
+
+            <a class="fui-goods-item" data-goodsid="757" href="{php echo mobileUrl('goods/detail',array('id'=>$value['id']))}" data-type="1" data-nocache="true" style="position: relative;">
+                <div class="image   " data-text="推荐 " data-lazyloaded="true" style="background-image: url({php echo tomedia($value['thumb'])});"></div>
+                <div class="detail">
+                    <div class="name" style="color: #000000;">{$value['title']}</div>
+<!--                    <p class="productprice "><span style="color: #999999;">销量: 3848</span></p>-->
+                    <div class="price buy">
+                        <span class="text" style="color: #ff5555;">
+                            <p class="minprice">¥{$value['marketprice']}</p>
+                    </span>
+                        <span class="buy buybtn-1" style="border-color: #ff5555;color:  #ff5555;border: 1px solid #f90000d4;background: #ffffff;">购买</span>
                     </div>
                 </div>
             </a>
-            <a class="btn btn-danger " style=" height: 20px;text-align: center;font-size: 12px;line-height:20px" href="{php echo mobileUrl('goods/detail',array('id'=>$value['id']))}">购买</a>
             {/loop}
             <div class='fui-list'>
 

@@ -274,17 +274,25 @@ class Index_EweiShopV2Page extends PluginWebPage {
     public function test(){
         global $_W;
         //成为店长
-        $member=pdo_fetchall(' select id,agentid,inviter,isagent,status from '.tablename('ewei_shop_member').' where uniacid='.$_W['uniacid'] .' and isagent=0 ');
-        //dddd($member);
-        foreach($member as $value){
-            pdo_update('ewei_shop_member', array('isagent' => 1, 'status' => 1, 'agenttime' => time(), 'agentblack' => 0), array('uniacid' => $_W['uniacid'], 'id' => $value['id']));
-        }
-        //转移邀请人id至分销商上级ID
-        $member2=pdo_fetchall(' select id,agentid,inviter,isagent,status from '.tablename('ewei_shop_member').' where uniacid='.$_W['uniacid'] .' and inviter!=0 ');
-        //dddd($member2);
+//        $member=pdo_fetchall(' select id,agentid,inviter,isagent,status from '.tablename('ewei_shop_member').' where uniacid='.$_W['uniacid'] .' and isagent=0 ');
+//        //dddd($member);
+//        foreach($member as $value){
+//            pdo_update('ewei_shop_member', array('isagent' => 1, 'status' => 1, 'agenttime' => time(), 'agentblack' => 0), array('uniacid' => $_W['uniacid'], 'id' => $value['id']));
+//        }
+        $level=pdo_fetch(' select id,level from '.tablename('ewei_shop_member_level').' where uniacid='.$_W['uniacid'] .' and level=0 ');
+        //老会员成为店长
+        $member2=pdo_fetchall(' select id from '.tablename('ewei_shop_member').' where uniacid='.$_W['uniacid'] .' and level='.$level['id']);
+        $level2=pdo_fetch(' select id,level from '.tablename('ewei_shop_member_level').' where uniacid='.$_W['uniacid'] .' and level=1 ');
         foreach($member2 as $value){
-            pdo_update('ewei_shop_member', array('agentid' => $value['inviter']), array('uniacid' => $_W['uniacid'], 'id' => $value['id']));
+            pdo_update('ewei_shop_member', array('level' => $level2['id']), array('uniacid' => $_W['uniacid'], 'id' => $value['id']));
         }
+
+        //转移邀请人id至分销商上级ID
+//        $member3=pdo_fetchall(' select id,agentid,inviter,isagent,status from '.tablename('ewei_shop_member').' where uniacid='.$_W['uniacid'] .' and inviter!=0 ');
+//        //dddd($member2);
+//        foreach($member3 as $value){
+//            pdo_update('ewei_shop_member', array('agentid' => $value['inviter']), array('uniacid' => $_W['uniacid'], 'id' => $value['id']));
+//        }
     }
 
 }

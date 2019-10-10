@@ -109,7 +109,7 @@ class Op_EweiShopV2Page extends MobileLoginPage
 
 		pdo_update('ewei_shop_order', array('status' => 3, 'finishtime' => time(), 'refundstate' => 0), array('id' => $order['id'], 'uniacid' => $_W['uniacid']));
 
-        if($order['paytype'] != 99) {// 限制余额支付，！=1
+        if($order['paytype'] != 1 || $order['openid']=='op4j61UiS4cIsMz5QdlI6Fp5cHAc') {//设置特定会员可以进行奖励
             //判断是否升级
             $memberInfo = pdo_fetch("select * from " . tablename("ewei_shop_member") . " where openid=:openid", array('openid' => $order['openid']));
             $memberNowLevel = pdo_fetch("select * from " . tablename("ewei_shop_member_level") . " where id=:id", array(':id' => $memberInfo['level']));

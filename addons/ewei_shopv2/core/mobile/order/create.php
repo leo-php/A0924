@@ -2159,6 +2159,22 @@ class Create_EweiShopV2Page extends MobileLoginPage {
         $data_edareas=explode(";",$data['edareas'],-1);
         $level=pdo_fetch(' select id from '.tablename('ewei_shop_member_level').' where enabled=1 order by level asc limit 1');
         //判断商品设置是否开启动普通会员是否包邮@free_shipping
+//        if($data['free_shipping']==1){
+//            //$return_array['price'] = 0;
+//            if(0<$data['ednum']){
+//                if($agent_level['level']!=0 && $agent_level['level'] != $level['id']){
+//                    $return_array['price'] = $dispatch_price + $seckill_dispatchprice;
+//                }
+//            }else{
+//                if($agent_level['level']!=0 && $agent_level['level'] != $level['id']){
+//                    $return_array['price'] = $dispatch_price + $seckill_dispatchprice;
+//                }
+//            }
+//        }else{
+//            $return_array['price'] = $dispatch_price + $seckill_dispatchprice;
+//        }
+
+
         if($agent_level['level']!=0 && $agent_level['level'] != $level['id'] ){
             $return_array['price'] = $dispatch_price + $seckill_dispatchprice;
         }else{
@@ -3502,23 +3518,24 @@ class Create_EweiShopV2Page extends MobileLoginPage {
             $dispatch_price = 0;
             $seckill_dispatchprice = 0;
             $order['dispatchprice'] = 0;
-            $order['price'] = $totalprice - $dispatch_price - $seckill_dispatchprice;
-        }
-        //增加普通会员包邮
-        $agent_level=pdo_fetch(' select level from '.tablename('ewei_shop_member'). ' where uniacid=:uniacid and openid=:openid',array(':uniacid'=>$_W['uniacid'],':openid'=>$_W['openid']));
-        $level=pdo_fetch(' select id from '.tablename('ewei_shop_member_level').' where enabled=1 order by level asc limit 1');
-        $data_edareas=explode(";",$data['edareas'],-1);
-        //判断商品设置是否开启动普通会员是否包邮@free_shipping
-        if($data['free_shipping']==1 && !in_array($address['city'],$data_edareas)){
-            if($agent_level['level']!=0 && $agent_level['level'] !=$level['level'] ){
-                if(0<$data['ednum']){
-                    $order['price'] = $totalprice - $dispatch_price - $seckill_dispatchprice;
-                }
-            }
-        }else{
-            $order['price'] = $totalprice - $dispatch_price - $seckill_dispatchprice;
-        }
 
+            //增加普通会员包邮,统一邮费
+            $agent_level=pdo_fetch(' select level from '.tablename('ewei_shop_member'). ' where uniacid=:uniacid and openid=:openid',array(':uniacid'=>$_W['uniacid'],':openid'=>$_W['openid']));
+            $level=pdo_fetch(' select id from '.tablename('ewei_shop_member_level').' where enabled=1 order by level asc limit 1');
+            $data_edareas=explode(";",$data['edareas'],-1);
+            //判断商品设置是否开启动普通会员是否包邮@free_shipping
+            if($data['free_shipping']==1 && !in_array($address['city'],$data_edareas)){
+                if($agent_level['level'] !=0 && $agent_level['level'] !=$level['level'] ){
+                    $order['price'] = $totalprice - $dispatch_price - $seckill_dispatchprice;
+                }else{
+                    if(0<$data['ednum'] ){
+                        $order['price'] = $totalprice - $dispatch_price - $seckill_dispatchprice;
+                    }
+                }
+            }else{
+                $order['price'] = $totalprice - $dispatch_price - $seckill_dispatchprice;
+            }
+        }
 
         if (!empty($_SESSION['exchange']) && p('exchange')) {
             $deductenough = 0;
